@@ -1,6 +1,7 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 import { Badge } from "@/components/ui/badge";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const schemes = [
   { name: "Jan Dhan Yojana", ministry: "Finance", benefit: "Zero-balance bank account + ₹10,000 OD", category: "Banking", match: 95 },
@@ -22,34 +23,23 @@ const categoryColors: Record<string, string> = {
 const SchemesSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const { t } = useLanguage();
 
   return (
     <section id="schemes" className="py-20 bg-background" ref={ref}>
       <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          className="text-center mb-14"
-        >
-          <h2 className="text-3xl sm:text-4xl font-bold mb-3">Government <span className="text-gradient-sakhi">Schemes</span> Matched</h2>
-          <p className="text-muted-foreground">SAKHI analyzes 50+ schemes and matches them to your profile</p>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} className="text-center mb-14">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-3">{t("governmentSchemes")} <span className="text-gradient-sakhi">{t("schemesMatchedTitle")}</span></h2>
+          <p className="text-muted-foreground">{t("schemesAnalyzes")}</p>
         </motion.div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {schemes.map((s, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: i * 0.08 }}
-              className="bg-card rounded-2xl p-5 border border-border hover:shadow-sakhi transition-all group"
-            >
+            <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} transition={{ delay: i * 0.08 }} className="bg-card rounded-2xl p-5 border border-border hover:shadow-sakhi transition-all group">
               <div className="flex items-start justify-between mb-3">
-                <Badge className={categoryColors[s.category] || "bg-muted text-muted-foreground"} variant="secondary">
-                  {s.category}
-                </Badge>
+                <Badge className={categoryColors[s.category] || "bg-muted text-muted-foreground"} variant="secondary">{s.category}</Badge>
                 <div className="text-right">
-                  <span className="text-xs text-muted-foreground">Match</span>
+                  <span className="text-xs text-muted-foreground">{t("match")}</span>
                   <div className="text-lg font-bold text-primary">{s.match}%</div>
                 </div>
               </div>

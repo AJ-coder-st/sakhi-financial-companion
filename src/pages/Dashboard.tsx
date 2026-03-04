@@ -7,6 +7,8 @@ import {
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { useLanguage } from "@/i18n/LanguageContext";
+import LanguageSelector from "@/components/LanguageSelector";
 import DashboardAssistant from "@/components/dashboard/DashboardAssistant";
 import DashboardSchemes from "@/components/dashboard/DashboardSchemes";
 import DashboardBudget from "@/components/dashboard/DashboardBudget";
@@ -16,19 +18,20 @@ import DashboardCommunity from "@/components/dashboard/DashboardCommunity";
 
 type TabKey = "home" | "assistant" | "schemes" | "budget" | "learn" | "savings" | "community";
 
-const tabs = [
-  { key: "home" as TabKey, label: "Home", icon: Home },
-  { key: "assistant" as TabKey, label: "SAKHI AI", icon: Mic },
-  { key: "schemes" as TabKey, label: "Schemes", icon: Search },
-  { key: "budget" as TabKey, label: "Budget", icon: BarChart3 },
-  { key: "savings" as TabKey, label: "Savings", icon: PiggyBank },
-  { key: "learn" as TabKey, label: "Learn", icon: BookOpen },
-  { key: "community" as TabKey, label: "SHG", icon: Users },
-];
-
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState<TabKey>("home");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { t } = useLanguage();
+
+  const tabs = [
+    { key: "home" as TabKey, label: t("home"), icon: Home },
+    { key: "assistant" as TabKey, label: t("sakhiAI"), icon: Mic },
+    { key: "schemes" as TabKey, label: t("schemes"), icon: Search },
+    { key: "budget" as TabKey, label: t("budget"), icon: BarChart3 },
+    { key: "savings" as TabKey, label: t("savings"), icon: PiggyBank },
+    { key: "learn" as TabKey, label: t("learn"), icon: BookOpen },
+    { key: "community" as TabKey, label: t("shg"), icon: Users },
+  ];
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -41,25 +44,25 @@ const Dashboard = () => {
           <span className="text-lg font-bold text-sidebar-foreground">SAKHI</span>
         </div>
         <nav className="flex-1 px-3 mt-2">
-          {tabs.map((t) => (
+          {tabs.map((tab) => (
             <button
-              key={t.key}
-              onClick={() => setActiveTab(t.key)}
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors mb-1 ${
-                activeTab === t.key
+                activeTab === tab.key
                   ? "bg-sidebar-accent text-sidebar-primary"
                   : "text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
               }`}
             >
-              <t.icon className="w-5 h-5" />
-              {t.label}
+              <tab.icon className="w-5 h-5" />
+              {tab.label}
             </button>
           ))}
         </nav>
         <div className="p-4 border-t border-sidebar-border">
           <Link to="/">
             <button className="flex items-center gap-2 text-sm text-sidebar-foreground/50 hover:text-sidebar-foreground transition-colors">
-              <LogOut className="w-4 h-4" /> Back to Home
+              <LogOut className="w-4 h-4" /> {t("backToHome")}
             </button>
           </Link>
         </div>
@@ -94,18 +97,18 @@ const Dashboard = () => {
                 </button>
               </div>
               <nav className="flex-1 px-3">
-                {tabs.map((t) => (
+                {tabs.map((tab) => (
                   <button
-                    key={t.key}
-                    onClick={() => { setActiveTab(t.key); setSidebarOpen(false); }}
+                    key={tab.key}
+                    onClick={() => { setActiveTab(tab.key); setSidebarOpen(false); }}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium mb-1 ${
-                      activeTab === t.key
+                      activeTab === tab.key
                         ? "bg-sidebar-accent text-sidebar-primary"
                         : "text-sidebar-foreground/60"
                     }`}
                   >
-                    <t.icon className="w-5 h-5" />
-                    {t.label}
+                    <tab.icon className="w-5 h-5" />
+                    {tab.label}
                   </button>
                 ))}
               </nav>
@@ -123,9 +126,10 @@ const Dashboard = () => {
           </button>
           <div className="flex-1">
             <h1 className="text-lg font-bold">
-              {activeTab === "home" ? "नमस्ते, सुनीता! 🙏" : tabs.find(t => t.key === activeTab)?.label}
+              {activeTab === "home" ? t("greeting") : tabs.find(tab => tab.key === activeTab)?.label}
             </h1>
           </div>
+          <LanguageSelector variant="compact" />
           <button className="relative">
             <Bell className="w-5 h-5 text-muted-foreground" />
             <span className="absolute -top-1 -right-1 w-2 h-2 bg-destructive rounded-full" />
@@ -162,73 +166,67 @@ const Dashboard = () => {
   );
 };
 
-const HomeTab = ({ onNavigate }: { onNavigate: (tab: TabKey) => void }) => (
-  <div className="space-y-6 max-w-4xl">
-    {/* Quick stats */}
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {[
-        { label: "Total Savings", value: "₹4,250", icon: PiggyBank, color: "text-primary" },
-        { label: "Schemes Matched", value: "6", icon: Search, color: "text-secondary" },
-        { label: "Lessons Done", value: "8/24", icon: BookOpen, color: "text-accent" },
-        { label: "Savings Streak", value: "12 days 🔥", icon: TrendingUp, color: "text-saffron-deep" },
-      ].map((s, i) => (
-        <motion.div
-          key={i}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: i * 0.1 }}
-          className="bg-card rounded-2xl p-4 shadow-sm border border-border"
-        >
-          <s.icon className={`w-5 h-5 ${s.color} mb-2`} />
-          <p className="text-xs text-muted-foreground">{s.label}</p>
-          <p className="text-lg font-bold">{s.value}</p>
-        </motion.div>
-      ))}
-    </div>
+const HomeTab = ({ onNavigate }: { onNavigate: (tab: TabKey) => void }) => {
+  const { t } = useLanguage();
 
-    {/* Alerts */}
-    <div className="bg-saffron/10 rounded-2xl p-4 border border-saffron/20">
-      <h3 className="font-bold text-sm mb-2 flex items-center gap-2">
-        <Bell className="w-4 h-4 text-saffron-deep" /> New Scheme Alert
-      </h3>
-      <p className="text-sm text-muted-foreground">You may be eligible for <strong>PM Vishwakarma Yojana</strong> — up to ₹3 lakh at 5% interest!</p>
-      <button onClick={() => onNavigate("schemes")} className="text-sm text-primary font-semibold mt-2 flex items-center gap-1">
-        Check Eligibility <ChevronRight className="w-4 h-4" />
-      </button>
-    </div>
-
-    {/* Quick actions */}
-    <div>
-      <h3 className="font-bold mb-3">Quick Actions</h3>
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+  return (
+    <div className="space-y-6 max-w-4xl">
+      {/* Quick stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: "Talk to SAKHI", icon: Mic, tab: "assistant" as TabKey },
-          { label: "Log Expense", icon: BarChart3, tab: "budget" as TabKey },
-          { label: "Find Schemes", icon: Search, tab: "schemes" as TabKey },
-          { label: "Add Savings", icon: PiggyBank, tab: "savings" as TabKey },
-          { label: "Continue Learning", icon: BookOpen, tab: "learn" as TabKey },
-          { label: "My SHG Group", icon: Users, tab: "community" as TabKey },
-        ].map((a, i) => (
-          <button
-            key={i}
-            onClick={() => onNavigate(a.tab)}
-            className="bg-card rounded-xl p-4 border border-border hover:shadow-sakhi transition-shadow text-left"
-          >
-            <a.icon className="w-5 h-5 text-primary mb-2" />
-            <p className="text-sm font-medium">{a.label}</p>
-          </button>
+          { label: t("totalSavings"), value: "₹4,250", icon: PiggyBank, color: "text-primary" },
+          { label: t("schemesMatchedLabel"), value: "6", icon: Search, color: "text-secondary" },
+          { label: t("lessonsDone"), value: "8/24", icon: BookOpen, color: "text-accent" },
+          { label: t("savingsStreak"), value: "12 days 🔥", icon: TrendingUp, color: "text-saffron-deep" },
+        ].map((s, i) => (
+          <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} className="bg-card rounded-2xl p-4 shadow-sm border border-border">
+            <s.icon className={`w-5 h-5 ${s.color} mb-2`} />
+            <p className="text-xs text-muted-foreground">{s.label}</p>
+            <p className="text-lg font-bold">{s.value}</p>
+          </motion.div>
         ))}
       </div>
-    </div>
 
-    {/* Learning progress */}
-    <div className="bg-card rounded-2xl p-5 border border-border">
-      <h3 className="font-bold mb-2">Learning Progress</h3>
-      <p className="text-sm text-muted-foreground mb-3">Level 2: Banking Basics</p>
-      <Progress value={33} className="h-3" />
-      <p className="text-xs text-muted-foreground mt-2">8 of 24 lessons completed</p>
+      {/* Alerts */}
+      <div className="bg-saffron/10 rounded-2xl p-4 border border-saffron/20">
+        <h3 className="font-bold text-sm mb-2 flex items-center gap-2">
+          <Bell className="w-4 h-4 text-saffron-deep" /> {t("newSchemeAlert")}
+        </h3>
+        <p className="text-sm text-muted-foreground" dangerouslySetInnerHTML={{ __html: t("schemeAlertText") }} />
+        <button onClick={() => onNavigate("schemes")} className="text-sm text-primary font-semibold mt-2 flex items-center gap-1">
+          {t("checkEligibility")} <ChevronRight className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* Quick actions */}
+      <div>
+        <h3 className="font-bold mb-3">{t("quickActions")}</h3>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {[
+            { label: t("talkToSakhi"), icon: Mic, tab: "assistant" as TabKey },
+            { label: t("logExpense"), icon: BarChart3, tab: "budget" as TabKey },
+            { label: t("findSchemes"), icon: Search, tab: "schemes" as TabKey },
+            { label: t("addSavings"), icon: PiggyBank, tab: "savings" as TabKey },
+            { label: t("continueLearning"), icon: BookOpen, tab: "learn" as TabKey },
+            { label: t("mySHGGroup"), icon: Users, tab: "community" as TabKey },
+          ].map((a, i) => (
+            <button key={i} onClick={() => onNavigate(a.tab)} className="bg-card rounded-xl p-4 border border-border hover:shadow-sakhi transition-shadow text-left">
+              <a.icon className="w-5 h-5 text-primary mb-2" />
+              <p className="text-sm font-medium">{a.label}</p>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Learning progress */}
+      <div className="bg-card rounded-2xl p-5 border border-border">
+        <h3 className="font-bold mb-2">{t("learningProgress")}</h3>
+        <p className="text-sm text-muted-foreground mb-3">{t("level2Banking")}</p>
+        <Progress value={33} className="h-3" />
+        <p className="text-xs text-muted-foreground mt-2">{t("lessonsCompleted")}</p>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default Dashboard;
