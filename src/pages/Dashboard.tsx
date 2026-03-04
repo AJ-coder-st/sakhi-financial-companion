@@ -43,7 +43,7 @@ const Dashboard = () => {
           <div className="w-9 h-9 rounded-xl bg-saffron-gradient flex items-center justify-center">
             <Mic className="w-5 h-5 text-saffron-foreground" />
           </div>
-          <span className="text-lg font-bold text-sidebar-foreground">SAKHI</span>
+          <span className="text-lg font-bold text-sidebar-foreground">IRAIVI</span>
         </div>
         <nav className="flex-1 px-3 mt-2">
           {tabs.map((tab) => (
@@ -92,7 +92,7 @@ const Dashboard = () => {
                   <div className="w-9 h-9 rounded-xl bg-saffron-gradient flex items-center justify-center">
                     <Mic className="w-5 h-5 text-saffron-foreground" />
                   </div>
-                  <span className="text-lg font-bold text-sidebar-foreground">SAKHI</span>
+                  <span className="text-lg font-bold text-sidebar-foreground">IRAIVI</span>
                 </div>
                 <button onClick={() => setSidebarOpen(false)}>
                   <X className="w-5 h-5 text-sidebar-foreground" />
@@ -214,7 +214,7 @@ const HomeTab = ({ onNavigate }: { onNavigate: (tab: TabKey) => void }) => {
             { label: t("learnBusiness"), icon: Briefcase, tab: "entrepreneurship" as TabKey },
             { label: t("mySHGGroup"), icon: Users, tab: "community" as TabKey },
           ].map((a, i) => (
-            <button key={i} onClick={() => onNavigate(a.tab)} className="bg-card rounded-xl p-4 border border-border hover:shadow-sakhi transition-shadow text-left">
+            <button key={i} onClick={() => onNavigate(a.tab)} className="bg-card rounded-xl p-4 border border-border hover:shadow-iraivi transition-shadow text-left">
               <a.icon className="w-5 h-5 text-primary mb-2" />
               <p className="text-sm font-medium">{a.label}</p>
             </button>

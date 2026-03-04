@@ -12,7 +12,7 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 const getInitialLanguage = (): Language => {
-  const stored = localStorage.getItem("sakhi-language");
+  const stored = localStorage.getItem("iraivi-language");
   if (stored && stored in translations) return stored as Language;
   return "en";
 };
@@ -22,7 +22,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
 
   const setLanguage = useCallback((lang: Language) => {
     setLang(lang);
-    localStorage.setItem("sakhi-language", lang);
+    localStorage.setItem("iraivi-language", lang);
   }, []);
 
   const t = useCallback(
