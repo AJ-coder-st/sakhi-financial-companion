@@ -138,9 +138,12 @@ const DailyChallenge: React.FC<DailyChallengeProps> = ({ challenge, onComplete }
               <div className="bg-purple-50 rounded-lg p-3">
                 <h4 className="font-semibold text-purple-800 mb-2">आज के लिए विचार / Strategy for Today</h4>
                 <div className="text-sm text-purple-700 space-y-1">
-                  <p><strong>बचत बचत / Step 1:</strong> अपने व्यय का 10% बचत करें / Save 10% of your income</p>
-                  <p><strong>खर्च विश्लेषण / Step 2:</strong> एक छोटे मालिक से बात करें / Talk to one shop owner</p>
-                  <p><strong>योजना / Step 3:</strong> कल के लिए एक नया विचार बनाएं / Plan one new idea for tomorrow</p>
+                  {React.createElement('p', {}, 
+                    React.createElement('strong', {}, 'बचत बचत / Step 1:'), ' अपने व्यय का 10% बचत करें / Save 10% of your income')}
+                  {React.createElement('p', {}, 
+                    React.createElement('strong', {}, 'खर्च विश्लेषण / Step 2:'), ' एक छोटे मालिक से बात करें / Talk to one shop owner')}
+                  {React.createElement('p', {}, 
+                    React.createElement('strong', {}, 'योजना / Step 3:'), ' कल के लिए एक नया विचार बनाएं / Plan one new idea for tomorrow')}
                 </div>
               </div>
             </div>
