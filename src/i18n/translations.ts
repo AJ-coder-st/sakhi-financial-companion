@@ -22,7 +22,13 @@ export const translations = {
     // Hero
     availableIn: "Available in 10+ Indian Languages",
     heroTagline: "Your SAKHI, Your Strength",
-    heroDesc: "AI-powered financial companion designed for rural women. Voice-first. Feature-phone friendly. Reaching the truly last mile.",
+    heroDesc:
+      "AI-powered financial companion designed for rural women. Voice-first. Feature-phone friendly. Reaching the truly last mile.",
+    heroChatGreeting:
+      "Namaste Sunita didi! 🙏 I am your SAKHI. How can I help you today?",
+    heroChatUserPrompt: "Tell me about savings schemes.",
+    heroChatSakhiReply:
+      "Of course! I found 3 schemes for you. First is the Mahila Samman Savings Certificate — it gives 7.5% interest. ✨",
     startJourney: "Start Your Journey",
     seeDemo: "See Demo",
     dpdpCompliant: "DPDP Compliant",
@@ -189,7 +195,13 @@ export const translations = {
 
     availableIn: "10+ भारतीय भाषाओं में उपलब्ध",
     heroTagline: "आपकी सखी, आपकी ताक़त",
-    heroDesc: "ग्रामीण महिलाओं के लिए AI-संचालित वित्तीय साथी। आवाज़-प्रथम। फीचर-फोन अनुकूल।",
+    heroDesc:
+      "ग्रामीण महिलाओं के लिए AI-संचालित वित्तीय साथी। आवाज़-प्रथम। फीचर-फोन अनुकूल। सबसे अंतिम छोर तक पहुंचने वाली।",
+    heroChatGreeting:
+      "नमस्ते सुनीता दीदी! 🙏 मैं आपकी सखी हूँ। आज मैं आपकी क्या मदद कर सकती हूँ?",
+    heroChatUserPrompt: "मुझे बचत योजना के बारे में बताओ",
+    heroChatSakhiReply:
+      "बिलकुल! आपके लिए 3 योजनाएं मिली हैं। सबसे पहले महिला सम्मान बचत पत्र — इसमें 7.5% ब्याज मिलता है। ✨",
     startJourney: "अपनी यात्रा शुरू करें",
     seeDemo: "डेमो देखें",
     dpdpCompliant: "DPDP अनुपालन",
@@ -340,7 +352,13 @@ export const translations = {
 
     availableIn: "10+ இந்திய மொழிகளில் கிடைக்கும்",
     heroTagline: "உங்கள் சகி, உங்கள் பலம்",
-    heroDesc: "கிராமப்புற பெண்களுக்கான AI நிதி உதவியாளர். குரல் முதல். ஃபீச்சர் போன் நட்பு.",
+    heroDesc:
+      "கிராமப்புற பெண்களுக்கான AI நிதி துணை. குரல்-முதலில். ஃபீச்சர் போன்களுக்கும் ஏற்றது.",
+    heroChatGreeting:
+      "வணக்கம் சுனிதா அக்கா! 🙏 நான் உங்கள் சகி. இன்று உங்களுக்கு எப்படி உதவலாம்?",
+    heroChatUserPrompt: "சேமிப்பு திட்டங்கள் பற்றி சொல்லுங்கள்",
+    heroChatSakhiReply:
+      "நிச்சயமாக! உங்களுக்கு 3 சேமிப்பு திட்டங்கள் கிடைத்துள்ளன. முதலில் மகிளா சம்மான் சேமிப்பு சான்று — இதில் 7.5% வட்டி கிடைக்கும். ✨",
     startJourney: "பயணத்தை தொடங்கு",
     seeDemo: "டெமோ பார்",
     dpdpCompliant: "DPDP இணக்கம்",
@@ -491,7 +509,13 @@ export const translations = {
 
     availableIn: "10+ భారతీయ భాషల్లో అందుబాటులో",
     heroTagline: "మీ సఖి, మీ శక్తి",
-    heroDesc: "గ్రామీణ మహిళల కోసం AI ఆర్థిక సహాయకుడు. వాయిస్-ఫస్ట్. ఫీచర్-ఫోన్ ఫ్రెండ్లీ.",
+    heroDesc:
+      "గ్రామీణ మహిళల కోసం AI ఆధారిత ఆర్థిక సహాయకురాలు. వాయిస్-ఫస్ట్. ఫీచర్ ఫోన్‌లకు అనుకూలం. అసలు చివరి మైలు వరకు చేరుతుంది.",
+    heroChatGreeting:
+      "నమస్తే సునీత అక్కా! 🙏 నేను మీ SAKHI. ఈ రోజు మీకు ఎలా సహాయం చేయను?",
+    heroChatUserPrompt: "పొదుపు పథకాల గురించి చెప్పండి",
+    heroChatSakhiReply:
+      "తప్పకుండా! మీ కోసం 3 పొదుపు పథకాలు కనుగొన్నాను. మొదట మహిళా సమ్మాన్ సేవింగ్స్ సర్టిఫికేట్ — ఇందులో 7.5% వడ్డీ లభిస్తుంది. ✨",
     startJourney: "మీ ప్రయాణం ప్రారంభించండి",
     seeDemo: "డెమో చూడండి",
     dpdpCompliant: "DPDP అనుసరణ",

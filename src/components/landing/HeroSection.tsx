@@ -28,12 +28,8 @@ const HeroSection = () => {
             </div>
 
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-primary-foreground leading-tight mb-4">
-              आपकी सखी,{" "}
-              <span className="text-gradient-saffron">आपकी ताक़त</span>
+              <span className="text-gradient-saffron">{t("heroTagline")}</span>
             </h1>
-            <p className="text-lg sm:text-xl text-primary-foreground/70 mb-2 font-devanagari">
-              {t("heroTagline")}
-            </p>
             <p className="text-base text-primary-foreground/60 max-w-lg mb-8">
               {t("heroDesc")}
             </p>
@@ -82,13 +78,19 @@ const HeroSection = () => {
 
                   <div className="flex-1 p-4 flex flex-col gap-3 overflow-hidden">
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1 }} className="bg-muted rounded-2xl rounded-tl-sm px-4 py-3 max-w-[85%] self-start">
-                      <p className="text-sm font-devanagari">नमस्ते सुनीता दीदी! 🙏 मैं आपकी सखी हूँ। आज मैं आपकी क्या मदद कर सकती हूँ?</p>
+                      <p className="text-sm font-devanagari">
+                        {t("heroChatGreeting")}
+                      </p>
                     </motion.div>
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.8 }} className="bg-saffron/20 rounded-2xl rounded-tr-sm px-4 py-3 max-w-[85%] self-end">
-                      <p className="text-sm font-devanagari">मुझे बचत योजना के बारे में बताओ</p>
+                      <p className="text-sm font-devanagari">
+                        {t("heroChatUserPrompt")}
+                      </p>
                     </motion.div>
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 2.6 }} className="bg-muted rounded-2xl rounded-tl-sm px-4 py-3 max-w-[85%] self-start">
-                      <p className="text-sm font-devanagari">बिलकुल! आपके लिए 3 योजनाएं मिली हैं। सबसे पहले <strong>महिला सम्मान बचत पत्र</strong> — इसमें 7.5% ब्याज मिलता है। ✨</p>
+                      <p className="text-sm font-devanagari">
+                        {t("heroChatSakhiReply")}
+                      </p>
                     </motion.div>
                   </div>
 
