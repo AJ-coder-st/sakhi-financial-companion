@@ -3,14 +3,18 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Mic } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/i18n/LanguageContext";
+import LanguageSelector from "@/components/LanguageSelector";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const { t } = useLanguage();
+
   const links = [
-    { label: "Features", href: "#features" },
-    { label: "How It Works", href: "#how-it-works" },
-    { label: "Schemes", href: "#schemes" },
-    { label: "Impact", href: "#impact" },
+    { label: t("features"), href: "#features" },
+    { label: t("howItWorks"), href: "#how-it-works" },
+    { label: t("schemes"), href: "#schemes" },
+    { label: t("impact"), href: "#impact" },
   ];
 
   return (
@@ -32,12 +36,13 @@ const Navbar = () => {
         </div>
 
         <div className="hidden md:flex items-center gap-3">
+          <LanguageSelector variant="compact" />
           <Link to="/login">
-            <Button variant="ghost" size="sm">Login</Button>
+            <Button variant="ghost" size="sm">{t("login")}</Button>
           </Link>
           <Link to="/dashboard">
             <Button size="sm" className="bg-saffron-gradient text-saffron-foreground font-semibold shadow-saffron hover:opacity-90">
-              Get Started
+              {t("getStarted")}
             </Button>
           </Link>
         </div>
@@ -61,9 +66,10 @@ const Navbar = () => {
                   {l.label}
                 </a>
               ))}
+              <LanguageSelector />
               <Link to="/dashboard">
                 <Button className="w-full bg-saffron-gradient text-saffron-foreground font-semibold mt-2">
-                  Get Started
+                  {t("getStarted")}
                 </Button>
               </Link>
             </div>
