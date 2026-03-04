@@ -27,6 +27,8 @@ const LiveTextTranslateScanner: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [ocrProgress, setOcrProgress] = useState<string>('');
+  const [stableCount, setStableCount] = useState(0);
+  const [showScanOverlay, setShowScanOverlay] = useState(true);
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -136,6 +138,28 @@ const LiveTextTranslateScanner: React.FC = () => {
     }
   }, []);
 
+  // Image preprocessing function
+  const preprocessImage = useCallback((ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+
+    // Convert to grayscale and apply threshold
+    for (let i = 0; i < data.length; i += 4) {
+      const gray =
+        0.299 * data[i] +
+        0.587 * data[i + 1] +
+        0.114 * data[i + 2];
+
+      const value = gray > 140 ? 255 : 0;
+
+      data[i] = value;
+      data[i + 1] = value;
+      data[i + 2] = value;
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+  }, []);
+
   // OCR processing
   const processFrame = useCallback(async () => {
     if (!videoRef.current || !canvasRef.current || !Tesseract || isProcessing) return;
@@ -150,14 +174,32 @@ const LiveTextTranslateScanner: React.FC = () => {
 
       if (!ctx) return;
 
-      // Set canvas size for optimal OCR performance
-      canvas.width = 640;
-      canvas.height = 480;
+      // Set canvas size for better OCR resolution
+      canvas.width = 1280;
+      canvas.height = 720;
 
-      // Draw video frame to canvas
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      // Draw center region of video frame for better text focus
+      const sourceWidth = video.videoWidth / 2;
+      const sourceHeight = video.videoHeight / 2;
+      const sourceX = video.videoWidth / 4;
+      const sourceY = video.videoHeight / 4;
+      
+      ctx.drawImage(
+        video,
+        sourceX,
+        sourceY,
+        sourceWidth,
+        sourceHeight,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
 
-      // Perform OCR with multilingual support
+      // Preprocess image for better OCR
+      preprocessImage(ctx, canvas);
+
+      // Perform OCR with improved configuration
       const result = await Tesseract.recognize(
         canvas,
         'eng+tam+hin+tel',
@@ -166,20 +208,38 @@ const LiveTextTranslateScanner: React.FC = () => {
             if (m.status === 'recognizing text') {
               setOcrProgress(`Recognizing text... ${Math.round(m.progress * 100)}%`);
             }
-          }
+          },
+          tessedit_pageseg_mode: 6,
+          tessedit_char_whitelist:
+            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789₹.,:-'
         }
       );
 
       const detectedText = result.data.text.trim();
+      const confidence = result.data.confidence || 0;
 
-      // Ignore empty or duplicate results
-      if (!detectedText || detectedText === lastDetectionRef.current) {
+      // Ignore low confidence results
+      if (confidence < 60) {
+        console.log('Low confidence frame ignored:', confidence);
         setIsProcessing(false);
         setOcrProgress('');
         return;
       }
 
-      lastDetectionRef.current = detectedText;
+      // Stabilize text detection - only update when same text appears multiple times
+      if (detectedText === lastDetectionRef.current) {
+        setStableCount(prev => prev + 1);
+      } else {
+        setStableCount(0);
+        lastDetectionRef.current = detectedText;
+      }
+
+      // Only update UI when text is stable across multiple frames
+      if (stableCount < 2) {
+        setIsProcessing(false);
+        setOcrProgress('');
+        return;
+      }
 
       // Translate the detected text
       let translatedText = detectedText;
@@ -231,10 +291,10 @@ const LiveTextTranslateScanner: React.FC = () => {
 
       setIsScanning(true);
 
-      // Start OCR interval (every 1500ms)
+      // Start OCR interval (every 2000ms for better accuracy)
       ocrIntervalRef.current = setInterval(() => {
         processFrame();
-      }, 1500);
+      }, 2000);
 
     } catch (err: any) {
       console.error('Camera error:', err);
@@ -247,6 +307,82 @@ const LiveTextTranslateScanner: React.FC = () => {
       }
     }
   }, [processFrame]);
+
+  // Capture single frame for manual high-accuracy OCR
+  const captureFrame = useCallback(async () => {
+    if (!videoRef.current || !canvasRef.current || !Tesseract) return;
+
+    try {
+      setIsProcessing(true);
+      setOcrProgress('Capturing high-quality frame...');
+
+      const video = videoRef.current;
+      const canvas = canvasRef.current;
+      const ctx = canvas.getContext('2d');
+
+      if (!ctx) return;
+
+      // Use maximum resolution for capture
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+
+      // Draw full video frame
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      // Preprocess image
+      preprocessImage(ctx, canvas);
+
+      // Perform OCR with best settings
+      const result = await Tesseract.recognize(
+        canvas,
+        'eng+tam+hin+tel',
+        {
+          logger: (m: any) => {
+            if (m.status === 'recognizing text') {
+              setOcrProgress(`Processing captured frame... ${Math.round(m.progress * 100)}%`);
+            }
+          },
+          tessedit_pageseg_mode: 6,
+          tessedit_char_whitelist:
+            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789₹.,:-'
+        }
+      );
+
+      const detectedText = result.data.text.trim();
+      const confidence = result.data.confidence || 0;
+
+      if (confidence < 60 || !detectedText) {
+        setError('No text detected in captured frame. Try again with better lighting.');
+        setIsProcessing(false);
+        setOcrProgress('');
+        return;
+      }
+
+      // Translate detected text
+      let translatedText = detectedText;
+      try {
+        translatedText = await translateText(detectedText, targetLanguage);
+      } catch (err) {
+        console.warn('Translation failed, using original text:', err);
+      }
+
+      // Update detection result immediately for captured frame
+      setDetection({
+        detectedText,
+        translatedText,
+        timestamp: Date.now()
+      });
+
+      setIsProcessing(false);
+      setOcrProgress('');
+      
+    } catch (err) {
+      console.error('Frame capture error:', err);
+      setError('Failed to process captured frame. Please try again.');
+      setIsProcessing(false);
+      setOcrProgress('');
+    }
+  }, [preprocessImage, translateText, targetLanguage, Tesseract]);
 
   // Stop camera
   const stopCamera = useCallback(() => {
@@ -340,6 +476,28 @@ const LiveTextTranslateScanner: React.FC = () => {
             ))}
           </select>
         </div>
+
+        {/* Capture Frame Button */}
+        {isScanning && (
+          <button
+            onClick={captureFrame}
+            disabled={isProcessing || !Tesseract}
+            className="flex items-center gap-2 px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+          >
+            <Camera className="w-4 h-4" />
+            Capture Frame
+          </button>
+        )}
+
+        {/* Toggle Scan Overlay */}
+        {isScanning && (
+          <button
+            onClick={() => setShowScanOverlay(!showScanOverlay)}
+            className="flex items-center gap-2 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+          >
+            {showScanOverlay ? 'Hide Guide' : 'Show Guide'}
+          </button>
+        )}
       </div>
 
       {/* Camera Preview */}
@@ -352,6 +510,22 @@ const LiveTextTranslateScanner: React.FC = () => {
           className="w-full h-auto"
           style={{ display: isScanning ? 'block' : 'none' }}
         />
+        
+        {/* Scan Guide Overlay */}
+        {showScanOverlay && isScanning && (
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-1/2 h-1/2 border-2 border-yellow-400 border-dashed rounded-lg">
+              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-yellow-900 px-3 py-1 rounded text-sm font-semibold whitespace-nowrap">
+                SCAN TEXT HERE
+              </div>
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+                <div className="bg-yellow-400 bg-opacity-90 text-yellow-900 px-2 py-1 rounded text-xs">
+                  Align text in this box for best results
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
         
         {!isScanning && (
           <div className="flex items-center justify-center h-96 text-gray-400">
@@ -407,7 +581,8 @@ const LiveTextTranslateScanner: React.FC = () => {
         <div className="text-center py-8 text-gray-500">
           <RotateCcw className="w-12 h-12 mx-auto mb-4 text-gray-300" />
           <p>Point your camera at text to detect and translate</p>
-          <p className="text-sm mt-2">OCR processes frames every 1.5 seconds</p>
+          <p className="text-sm mt-2">OCR processes frames every 2 seconds for better accuracy</p>
+          <p className="text-xs mt-1 text-gray-400">Use "Capture Frame" for high-accuracy single scans</p>
         </div>
       )}
     </div>
