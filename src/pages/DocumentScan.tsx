@@ -17,6 +17,10 @@ interface ScanResponse {
   error?: string;
 }
 
+const env = (import.meta as any).env || {};
+const API_BASE: string =
+  env.VITE_API_BASE_URL || (env.DEV ? "http://localhost:3001" : "");
+
 const DocumentScan = () => {
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -69,7 +73,7 @@ const DocumentScan = () => {
       const formData = new FormData();
       formData.append("file", file);
 
-      const res = await fetch("/api/scanDocument", {
+      const res = await fetch(`${API_BASE}/api/scanDocument`, {
         method: "POST",
         body: formData,
       });

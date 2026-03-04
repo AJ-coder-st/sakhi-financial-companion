@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strict Language Prompt Test - SAKHI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .prompt-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+        .expected-box {
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            border-left: 4px solid #28a745;
+        }
+        .wrong-box {
+            background: #f8d7da;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            border-left: 4px solid #dc3545;
+        }
+        button {
+            background: #ff6b35;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #e55a2b;
+        }
+        textarea {
+            width: 100%;
+            height: 80px;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Strict Language Prompt Test - SAKHI</h1>
+    
+    <div class="test-section">
+        <h2>Updated System Prompt</h2>
+        <p>The system prompt has been updated with strict language enforcement rules:</p>
+        
+        <div class="prompt-box">You are SAKHI, a financial assistant designed to help users with simple financial advice.
+
+Follow these rules strictly:
+
+1. Answer ONLY the user's question.
+2. Do NOT add extra explanations unrelated to the query.
+3. Do NOT include summaries, sections, headings, or formatting unless the user asks.
+4. Do NOT add translations or responses in multiple languages.
+5. Respond ONLY in the language requested by the user.
+
+Language Enforcement Rules:
+
+• If the user asks for Tamil, respond ONLY in Tamil.
+• Do not include English words when Tamil is requested.
+• Use clear, natural Tamil that is easy to understand.
+• The entire response must be readable aloud by Tamil text-to-speech.
+• If the user asks for Hindi, respond ONLY in Hindi.
+• If the user asks for Telugu, respond ONLY in Telugu.
+• If the user asks for English, respond ONLY in English.
+
+Response Style Rules:
+
+• Keep responses short and focused.
+• Avoid long paragraphs.
+• Provide direct guidance related to the user's question.
+• Do not repeat the question.
+• Do not add extra educational content unless asked.
+
+Output Rules:
+
+• Output plain text only.
+• No headings.
+• No separators like "Summary" or "—".
+• No bilingual responses.
+
+User language: TAMIL
+User query: "இந்த திட்டம் என்ன?"</div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Cases</h2>
+        
+        <h3>Tamil Query Test</h3>
+        <textarea id="tamilQuery">இந்த திட்டம் என்ன?</textarea>
+        <button onclick="testTamilResponse()">🧪 Test Tamil Response</button>
+        
+        <div class="expected-box">
+            <strong>✅ Expected Response (100% Tamil):</strong><br>
+            இந்த திட்டம் சிறு தொழில்களுக்கு கடன் வழங்க அரசு தொடங்கிய ஒரு திட்டம். நீங்கள் அருகிலுள்ள வங்கியில் விண்ணப்பிக்கலாம்.
+        </div>
+        
+        <div class="wrong-box">
+            <strong>❌ Wrong Response (contains English):</strong><br>
+            இந்த திட்டம் ஒரு government scheme ஆகும். இது small businesses க்கு உதவுகிறது.
+        </div>
+        
+        <h3>Hindi Query Test</h3>
+        <textarea id="hindiQuery">मुझे ऋण चाहिए। क्या कोई योजना है?</textarea>
+        <button onclick="testHindiResponse()">🧪 Test Hindi Response</button>
+        
+        <div class="expected-box">
+            <strong>✅ Expected Response (100% Hindi):</strong><br>
+            हाँ, प्रधानमंत्री मुद्रा योजना छोटे व्यवसायों के लिए है। आप बैंक में आवेदन कर सकते हैं।
+        </div>
+        
+        <h3>English Query Test</h3>
+        <textarea id="englishQuery">I need a loan for my small business. Are there any schemes?</textarea>
+        <button onclick="testEnglishResponse()">🧪 Test English Response</button>
+        
+        <div class="expected-box">
+            <strong>✅ Expected Response (100% English):</strong><br>
+            Yes, the Pradhan Mantri Mudra Yojana is available for small businesses. You can apply at your nearest bank.
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Key Improvements</h2>
+        <ul>
+            <li><strong>🚫 No Bilingual Content:</strong> System explicitly forbids mixing languages</li>
+            <li><strong>🎯 Focused Responses:</strong> Only answers the user's specific question</li>
+            <li><strong>📏 Short & Direct:</strong> Avoids long paragraphs and extra explanations</li>
+            <li><strong>🔤 Language Enforcement:</strong> Strict rules for each language</li>
+            <li><strong>🗣️ TTS Optimized:</strong> Responses designed for text-to-speech readability</li>
+        </ul>
+    </div>
+
+    <div class="test-section">
+        <h2>Prompt Structure Analysis</h2>
+        <div class="prompt-box">BEFORE (Old Prompt):
+"You are a friendly financial advisor for rural communities in India. 
+You explain in very simple, conversational language, avoiding jargon. 
+Assume the user may have low literacy, so be clear and kind. 
+IMPORTANT: Respond only in the same language as the user."
+
+AFTER (New Prompt):
+"You are SAKHI, a financial assistant designed to help users with simple financial advice.
+
+Follow these rules strictly:
+1. Answer ONLY the user's question.
+2. Do NOT add extra explanations unrelated to the query.
+3. Do NOT include summaries, sections, headings, or formatting unless the user asks.
+4. Do NOT add translations or responses in multiple languages.
+5. Respond ONLY in the language requested by the user.
+
+Language Enforcement Rules:
+• If the user asks for Tamil, respond ONLY in Tamil.
+• Do not include English words when Tamil is requested.
+• Use clear, natural Tamil that is easy to understand.
+• The entire response must be readable aloud by Tamil text-to-speech.
+
+User language: TAMIL
+User query: "இந்த திட்டம் என்ன?""</div>
+    </div>
+
+    <script>
+        function testTamilResponse() {
+            const query = document.getElementById('tamilQuery').value;
+            alert(`Testing Tamil query: "${query}"\n\nExpected: 100% Tamil response\nNo English words should appear.\n\nCheck the backend console for the actual AI response.`);
+        }
+
+        function testHindiResponse() {
+            const query = document.getElementById('hindiQuery').value;
+            alert(`Testing Hindi query: "${query}"\n\nExpected: 100% Hindi response\nNo English words should appear.\n\nCheck the backend console for the actual AI response.`);
+        }
+
+        function testEnglishResponse() {
+            const query = document.getElementById('englishQuery').value;
+            alert(`Testing English query: "${query}"\n\nExpected: 100% English response\nNo other languages should appear.\n\nCheck the backend console for the actual AI response.`);
+        }
+    </script>
+</body>
+</html>

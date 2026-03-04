@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Fallback TTS Test - SAKHI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #ff6b35;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #e55a2b;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .voice-info {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+        .error {
+            background: #f8d7da;
+            border-left: 4px solid #dc3545;
+        }
+        .cloud {
+            background: #cce5ff;
+            border-left: 4px solid #007bff;
+        }
+        .browser {
+            background: #e2e3e5;
+            border-left: 4px solid #6c757d;
+        }
+        textarea {
+            width: 100%;
+            height: 80px;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .result-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+        }
+        .lang-en { border-left-color: #28a745; }
+        .lang-hi { border-left-color: #dc3545; }
+        .lang-ta { border-left-color: #ffc107; }
+        .lang-te { border-left-color: #6f42c1; }
+    </style>
+</head>
+<body>
+    <h1>☁️ Cloud Fallback TTS Test - SAKHI</h1>
+    
+    <div class="test-section">
+        <h2>System Status & Voice Analysis</h2>
+        <div id="systemStatus" class="voice-info">Initializing TTS system...</div>
+        <button onclick="initializeTTSSystem()" id="initBtn">🔄 Initialize TTS</button>
+        <button onclick="analyzeVoiceSupport()">🔍 Analyze Voice Support</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Language Support Analysis</h2>
+        <div id="voiceSupport" class="voice-info">Click "Analyze Voice Support" to check which languages have local voices...</div>
+    </div>
+
+    <div class="test-section">
+        <h2>Cloud Fallback Tests</h2>
+        <p>These tests simulate the scenario where local voices are missing and cloud TTS should be used:</p>
+        
+        <h3>Tamil Response (Cloud Fallback Expected)</h3>
+        <textarea id="tamilText">SIP என்பது ஒரு மாதாந்திர முதலீட்டு திட்டம். இது சிறிய முதலீடுகளுக்கு ஏற்றது.</textarea>
+        <button onclick="testTamilFallback()" id="tamilBtn">🗣️ Test Tamil Cloud Fallback</button>
+        
+        <h3>Hindi Response (Cloud Fallback Expected)</h3>
+        <textarea id="hindiText">यह एक मासिक निवेश योजना है। यह छोटे निवेशों के लिए उपयुक्त है।</textarea>
+        <button onclick="testHindiFallback()" id="hindiBtn">🗣️ Test Hindi Cloud Fallback</button>
+        
+        <h3>Telugu Response (Cloud Fallback Expected)</h3>
+        <textarea id="teluguText">ఇది నెలవారీ పెట్టుబెట్టు పథకం. ఇది చిన్న పెట్టుబెట్టులకు అనుకూలం.</textarea>
+        <button onclick="testTeluguFallback()" id="teluguBtn">🗣️ Test Telugu Cloud Fallback</button>
+        
+        <h3>English Response (Browser TTS Expected)</h3>
+        <textarea id="englishText">This is a monthly investment plan. It is suitable for small investments.</textarea>
+        <button onclick="testEnglishBrowser()" id="englishBtn">🗣️ Test English Browser TTS</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Gemini Response Simulation</h2>
+        <p>Test actual Gemini API response formats with intelligent fallback:</p>
+        
+        <div class="result-box lang-ta">
+            <strong>Tamil Gemini Response:</strong>
+            <div id="tamilGemini">இந்த திட்டம் சிறு தொழில்களுக்கு உதவும் அரசு திட்டமாகும். நீங்கள் அருகிலுள்ள வங்கியில் விண்ணப்பிக்கலாம்.</div>
+            <button onclick="testGeminiResponse('ta', 'tamilGemini')" id="geminiTaBtn">🗣️ Test Gemini Tamil</button>
+        </div>
+        
+        <div class="result-box lang-hi">
+            <strong>हिन्दी Gemini Response:</strong>
+            <div id="hindiGemini">यह योजना छोटे व्यवसायियों के लिए है। आप अपने नजदीकी बैंक में आवेदन कर सकते हैं।</div>
+            <button onclick="testGeminiResponse('hi', 'hindiGemini')" id="geminiHiBtn">🗣️ Test Gemini Hindi</button>
+        </div>
+        
+        <div class="result-box lang-te">
+            <strong>తెలుగు Gemini Response:</strong>
+            <div id="teluguGemini">ఈ పథకం చిన్న వ్యాపారాల కోసం ఉంది. మీరు మీ దగ్గరి బ్యాంకులో దరఖాస్తు చేయవచ్చు.</div>
+            <button onclick="testGeminiResponse('te', 'teluguGemini')" id="geminiTeBtn">🗣️ Test Gemini Telugu</button>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Direct Cloud TTS Tests</h2>
+        <p>Test cloud TTS directly without fallback logic:</p>
+        
+        <button onclick="testDirectCloudTTS('ta', 'இது தமிழ் சோதனை உரையாடல்')">☁️ Direct Tamil Cloud TTS</button>
+        <button onclick="testDirectCloudTTS('hi', 'यह हिंदी परीक्षण वार्तालाप है')">☁️ Direct Hindi Cloud TTS</button>
+        <button onclick="testDirectCloudTTS('te', 'ఇది తెలుగు పరీక్ష సంభాషణ')">☁️ Direct Telugu Cloud TTS</button>
+        <button onclick="testDirectCloudTTS('en', 'This is English test conversation')">☁️ Direct English Cloud TTS</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Execution Logs</h2>
+        <div id="ttsLogs" class="voice-info">TTS execution logs will appear here...</div>
+        <button onclick="clearLogs()">🗑️ Clear Logs</button>
+    </div>
+
+    <script>
+        // Robust TTS System with Cloud Fallback
+        let voices = [];
+        let ttsReady = false;
+
+        // Unicode patterns for language detection
+        const LANGUAGE_PATTERNS = {
+            hindi: /[\u0900-\u097F]/g,
+            tamil: /[\u0B80-\u0BFF]/g,
+            telugu: /[\u0C00-\u0C7F]/g,
+            latin: /[a-zA-Z]/g
+        };
+
+        // Cloud language codes
+        const CLOUD_LANGUAGE_CODES = {
+            en: 'en',
+            hi: 'hi',
+            ta: 'ta',
+            te: 'te'
+        };
+
+        function detectLanguage(text) {
+            if (!text || typeof text !== 'string') return 'en';
+
+            const counts = {
+                en: (text.match(LANGUAGE_PATTERNS.latin) || []).length,
+                hi: (text.match(LANGUAGE_PATTERNS.hindi) || []).length,
+                ta: (text.match(LANGUAGE_PATTERNS.tamil) || []).length,
+                te: (text.match(LANGUAGE_PATTERNS.telugu) || []).length
+            };
+
+            let maxLang = 'en';
+            let maxCount = counts.en;
+
+            for (const [lang, count] of Object.entries(counts)) {
+                if (count > maxCount) {
+                    maxLang = lang;
+                    maxCount = count;
+                }
+            }
+
+            logTTS(`🔍 Language detection: ${JSON.stringify(counts)} → ${maxLang}`);
+            return maxLang;
+        }
+
+        function getLanguageCode(language) {
+            const codes = {
+                en: 'en-IN',
+                hi: 'hi-IN',
+                ta: 'ta-IN',
+                te: 'te-IN'
+            };
+            return codes[language] || 'en-IN';
+        }
+
+        async function loadVoices(timeout = 5000) {
+            return new Promise((resolve, reject) => {
+                if (!('speechSynthesis' in window)) {
+                    reject(new Error('Speech synthesis not supported'));
+                    return;
+                }
+
+                const availableVoices = window.speechSynthesis.getVoices();
+                
+                if (availableVoices.length > 0) {
+                    voices = availableVoices;
+                    logTTS(`🗣️ Voices already loaded: ${voices.length} voices`);
+                    resolve(voices);
+                    return;
+                }
+
+                logTTS('⏳ Waiting for voices to load...');
+                
+                let voicesLoaded = false;
+                const timeoutId = setTimeout(() => {
+                    if (!voicesLoaded) {
+                        logTTS('⚠️ Voice loading timeout');
+                        resolve([]);
+                    }
+                }, timeout);
+
+                const handleVoicesChanged = () => {
+                    const loadedVoices = window.speechSynthesis.getVoices();
+                    voices = loadedVoices;
+                    logTTS(`🗣️ Voices loaded: ${loadedVoices.length} voices`);
+                    
+                    const voicesByLang = loadedVoices.reduce((acc, voice) => {
+                        const lang = voice.lang.split('-')[0];
+                        if (!acc[lang]) acc[lang] = [];
+                        acc[lang].push(voice.name);
+                        return acc;
+                    }, {});
+                    
+                    logTTS('🗣️ Available voices by language: ' + JSON.stringify(voicesByLang));
+                    
+                    voicesLoaded = true;
+                    clearTimeout(timeoutId);
+                    window.speechSynthesis.onvoiceschanged = null;
+                    resolve(loadedVoices);
+                };
+
+                window.speechSynthesis.onvoiceschanged = handleVoicesChanged;
+            });
+        }
+
+        function hasVoiceForLanguage(language) {
+            const langCode = getLanguageCode(language);
+            
+            // Try exact match first
+            if (voices.find(v => v.lang === langCode)) {
+                logTTS(`✅ Found exact voice match for ${language}: ${langCode}`);
+                return true;
+            }
+
+            // Try language prefix match
+            if (voices.find(v => v.lang.startsWith(language))) {
+                logTTS(`✅ Found prefix voice match for ${language}: ${language}`);
+                return true;
+            }
+
+            logTTS(`❌ No voice found for ${language} (${langCode})`);
+            return false;
+        }
+
+        function findBestVoice(language) {
+            const langCode = getLanguageCode(language);
+            
+            logTTS(`🔍 Finding voice for ${language} (${langCode}) from ${voices.length} voices`);
+            
+            // Try exact match first
+            let voice = voices.find(v => v.lang === langCode);
+            if (voice) {
+                logTTS(`✅ Found exact match: ${voice.name} (${voice.lang})`);
+                return voice;
+            }
+
+            // Try language prefix match
+            voice = voices.find(v => v.lang.startsWith(language));
+            if (voice) {
+                logTTS(`✅ Found prefix match: ${voice.name} (${voice.lang})`);
+                return voice;
+            }
+
+            // Fallback to English ONLY for English text
+            if (language === 'en') {
+                voice = voices.find(v => v.lang.startsWith('en'));
+                if (voice) {
+                    logTTS(`✅ Found English fallback: ${voice.name} (${voice.lang})`);
+                    return voice;
+                }
+            }
+
+            logTTS(`❌ No appropriate voice found for ${language}`);
+            return null;
+        }
+
+        async function speakWithBrowserTTS(text, language) {
+            const startTime = Date.now();
+            
+            try {
+                logTTS(`🎤 Starting Browser TTS for ${language}: "${text.substring(0, 50)}${text.length > 50 ? '...' : ''}"`);
+                
+                const selectedVoice = findBestVoice(language);
+                
+                if (!selectedVoice) {
+                    throw new Error(`No voice available for language: ${language}`);
+                }
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = selectedVoice.lang;
+                utterance.voice = selectedVoice;
+                utterance.rate = language === 'hi' ? 0.85 : 1.0;
+                utterance.pitch = 1.0;
+                utterance.volume = 1.0;
+                
+                // Cancel any ongoing speech
+                window.speechSynthesis.cancel();
+                
+                return new Promise((resolve) => {
+                    utterance.onstart = () => {
+                        logTTS(`🎤 Browser TTS started: ${language.toUpperCase()} with ${selectedVoice.name}`);
+                    };
+                    
+                    utterance.onend = () => {
+                        const endTime = Date.now();
+                        const duration = endTime - startTime;
+                        logTTS(`🔇 Browser TTS finished ${language.toUpperCase()} in ${duration}ms`);
+                        resolve({ success: true, method: 'browser', voice: selectedVoice.name });
+                    };
+                    
+                    utterance.onerror = (event) => {
+                        logTTS(`❌ Browser TTS Error for ${language}: ${event.error}`);
+                        resolve({ success: false, method: 'browser', voice: selectedVoice.name });
+                    };
+                    
+                    window.speechSynthesis.speak(utterance);
+                });
+                
+            } catch (error) {
+                logTTS(`❌ Browser TTS System Error for ${language}: ${error.message}`);
+                return { success: false, method: 'browser', voice: 'none' };
+            }
+        }
+
+        async function speakWithCloudTTS(text, language) {
+            const startTime = Date.now();
+            
+            try {
+                logTTS(`☁️ Starting Cloud TTS for ${language}: "${text.substring(0, 50)}${text.length > 50 ? '...' : ''}"`);
+                
+                const cloudLang = CLOUD_LANGUAGE_CODES[language];
+                if (!cloudLang) {
+                    throw new Error(`Cloud TTS not supported for language: ${language}`);
+                }
+                
+                const audioUrl = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&q=${encodeURIComponent(text)}&tl=${cloudLang}`;
+                const audio = new Audio(audioUrl);
+                
+                return new Promise((resolve) => {
+                    audio.onplay = () => {
+                        logTTS(`☁️ Cloud TTS started: ${language.toUpperCase()}`);
+                    };
+                    
+                    audio.onended = () => {
+                        const endTime = Date.now();
+                        const duration = endTime - startTime;
+                        logTTS(`☁️ Cloud TTS finished ${language.toUpperCase()} in ${duration}ms`);
+                        resolve({ success: true, method: 'cloud', voice: `Google Cloud TTS (${cloudLang})` });
+                    };
+                    
+                    audio.onerror = (event) => {
+                        logTTS(`❌ Cloud TTS Error for ${language}: ${event.error || 'Unknown error'}`);
+                        resolve({ success: false, method: 'cloud', voice: `Google Cloud TTS (${cloudLang})` });
+                    };
+                    
+                    audio.play().catch((error) => {
+                        logTTS(`❌ Cloud TTS Play Error for ${language}: ${error.message}`);
+                        resolve({ success: false, method: 'cloud', voice: `Google Cloud TTS (${cloudLang})` });
+                    });
+                });
+                
+            } catch (error) {
+                logTTS(`❌ Cloud TTS System Error for ${language}: ${error.message}`);
+                return { success: false, method: 'cloud', voice: 'none' };
+            }
+        }
+
+        async function speakWithIntelligentFallback(text) {
+            const startTime = Date.now();
+            
+            try {
+                logTTS(`🎤 Starting Intelligent Fallback TTS: "${text.substring(0, 50)}${text.length > 50 ? '...' : ''}"`);
+                
+                const detectedLanguage = detectLanguage(text);
+                
+                // Load voices if needed
+                if (voices.length === 0) {
+                    await loadVoices();
+                }
+                
+                // Check if appropriate voice exists
+                const hasVoice = hasVoiceForLanguage(detectedLanguage);
+                
+                let result;
+                
+                if (hasVoice) {
+                    logTTS(`✅ Using Browser TTS for ${detectedLanguage}`);
+                    result = await speakWithBrowserTTS(text, detectedLanguage);
+                } else {
+                    logTTS(`⚠️ No local voice for ${detectedLanguage}, switching to Cloud TTS`);
+                    result = await speakWithCloudTTS(text, detectedLanguage);
+                }
+                
+                const totalTime = Date.now() - startTime;
+                logTTS(`🎯 Intelligent Fallback TTS completed in ${totalTime}ms using ${result.method} TTS`);
+                
+                return result;
+                
+            } catch (error) {
+                logTTS(`❌ Intelligent Fallback TTS System Error: ${error.message}`);
+                return { success: false, method: 'failed', voice: 'none' };
+            }
+        }
+
+        async function initializeTTSSystem() {
+            const btn = document.getElementById('initBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ Initializing...';
+            
+            try {
+                voices = await loadVoices();
+                ttsReady = true;
+                
+                const statusDiv = document.getElementById('systemStatus');
+                statusDiv.innerHTML = `✅ TTS System Ready<br>Available voices: ${voices.length}<br>Status: Cloud fallback enabled`;
+                statusDiv.className = 'voice-info success';
+                
+            } catch (error) {
+                logTTS(`❌ Initialization failed: ${error.message}`);
+                document.getElementById('systemStatus').innerHTML = `❌ TTS System Failed<br>Error: ${error.message}`;
+                document.getElementById('systemStatus').className = 'voice-info error';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🔄 Initialize TTS';
+            }
+        }
+
+        function analyzeVoiceSupport() {
+            if (!ttsReady) {
+                logTTS('⚠️ TTS system not ready, please initialize first');
+                return;
+            }
+            
+            const languages = ['en', 'hi', 'ta', 'te'];
+            const support = languages.map(lang => ({
+                language: lang.toUpperCase(),
+                hasVoice: hasVoiceForLanguage(lang),
+                method: hasVoiceForLanguage(lang) ? 'Browser TTS' : 'Cloud TTS'
+            }));
+            
+            const supportDiv = document.getElementById('voiceSupport');
+            let html = '<strong>Language Support Analysis:</strong><br><br>';
+            
+            support.forEach(item => {
+                const statusClass = item.hasVoice ? 'success' : 'warning';
+                const icon = item.hasVoice ? '✅' : '⚠️';
+                html += `<div class="${statusClass}">${icon} ${item.language}: ${item.method}</div>`;
+            });
+            
+            supportDiv.innerHTML = html;
+            
+            logTTS('🎯 Voice support analysis completed');
+        }
+
+        async function testTamilFallback() {
+            await testLanguageFallback('ta', 'tamilText', 'tamilBtn');
+        }
+
+        async function testHindiFallback() {
+            await testLanguageFallback('hi', 'hindiText', 'hindiBtn');
+        }
+
+        async function testTeluguFallback() {
+            await testLanguageFallback('te', 'teluguText', 'teluguBtn');
+        }
+
+        async function testEnglishBrowser() {
+            await testLanguageFallback('en', 'englishText', 'englishBtn');
+        }
+
+        async function testLanguageFallback(expectedLang, textId, btnId) {
+            if (!ttsReady) {
+                logTTS('⚠️ TTS system not ready, please initialize first');
+                return;
+            }
+            
+            const text = document.getElementById(textId).value;
+            const btn = document.getElementById(btnId);
+            
+            btn.disabled = true;
+            btn.textContent = '🗣️ Testing...';
+            
+            try {
+                const detected = detectLanguage(text);
+                logTTS(`🔍 Expected: ${expectedLang}, Detected: ${detected}`);
+                
+                const hasVoice = hasVoiceForLanguage(detected);
+                logTTS(`🎯 Voice available: ${hasVoice ? 'Yes (Browser TTS)' : 'No (Cloud TTS)'}`);
+                
+                const result = await speakWithIntelligentFallback(text);
+                
+                if (result.success) {
+                    logTTS(`✅ Successfully spoke ${detected.toUpperCase()} using ${result.method.toUpperCase()}`);
+                } else {
+                    logTTS(`❌ Failed to speak ${detected.toUpperCase()}`);
+                }
+                
+            } catch (error) {
+                logTTS(`❌ Error testing ${expectedLang}: ${error.message}`);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = `🗣️ Test ${expectedLang.toUpperCase()} ${hasVoiceForLanguage(detectLanguage(document.getElementById(textId).value)) ? 'Browser' : 'Cloud'} TTS`;
+            }
+        }
+
+        async function testGeminiResponse(language, elementId) {
+            const text = document.getElementById(elementId).textContent;
+            const btn = document.getElementById('gemini' + language.toUpperCase() + 'Btn');
+            
+            btn.disabled = true;
+            btn.textContent = '🗣️ Speaking...';
+            
+            try {
+                const result = await speakWithIntelligentFallback(text);
+                
+                if (result.success) {
+                    logTTS(`✅ Gemini ${language.toUpperCase()} response spoken using ${result.method.toUpperCase()}`);
+                } else {
+                    logTTS(`❌ Gemini ${language.toUpperCase()} response failed`);
+                }
+                
+            } catch (error) {
+                logTTS(`❌ Error with Gemini ${language.toUpperCase()}: ${error.message}`);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = `🗣️ Test Gemini ${language.toUpperCase()}`;
+            }
+        }
+
+        async function testDirectCloudTTS(language, text) {
+            logTTS(`☁️ Testing Direct Cloud TTS for ${language.toUpperCase()}`);
+            
+            try {
+                const result = await speakWithCloudTTS(text, language);
+                
+                if (result.success) {
+                    logTTS(`✅ Direct Cloud TTS successful for ${language.toUpperCase()}`);
+                } else {
+                    logTTS(`❌ Direct Cloud TTS failed for ${language.toUpperCase()}`);
+                }
+                
+            } catch (error) {
+                logTTS(`❌ Direct Cloud TTS error for ${language.toUpperCase()}: ${error.message}`);
+            }
+        }
+
+        function logTTS(message) {
+            const logs = document.getElementById('ttsLogs');
+            const timestamp = new Date().toLocaleTimeString();
+            logs.innerHTML = `[${timestamp}] ${message}<br>` + logs.innerHTML;
+        }
+
+        function clearLogs() {
+            document.getElementById('ttsLogs').innerHTML = 'Logs cleared...';
+        }
+
+        // Initialize on load
+        window.onload = () => {
+            initializeTTSSystem();
+        };
+    </script>
+</body>
+</html>

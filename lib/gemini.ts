@@ -1,10 +1,97 @@
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { detectLanguage, getLanguagePromptInstruction, type DetectedLanguage } from "../src/utils/language-detection";
+
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_MODEL = "gemini-1.5-flash";
+
+// Updated model names prioritized for less traffic and more stability
+const PREFERRED_MODELS = [
+  "gemini-2.5-flash-lite",
+  "gemini-2.5-flash",
+  "gemini-pro-latest", 
+  "gemini-flash-latest"
+];
+
+let workingModel: string | null = null;
 
 if (!GEMINI_API_KEY) {
   console.warn(
     "GEMINI_API_KEY is not set. Gemini-powered features will fail until it is configured.",
   );
+}
+
+const genAI = GEMINI_API_KEY ? new GoogleGenerativeAI(GEMINI_API_KEY) : null;
+
+// Function to find a working model
+async function findWorkingModel(): Promise<string | null> {
+  if (!genAI) return null;
+  
+  for (const modelName of PREFERRED_MODELS) {
+    try {
+      console.log(`🧪 Testing model: ${modelName}`);
+      const model = genAI.getGenerativeModel({ model: modelName });
+      const result = await model.generateContent("Test");
+      await result.response;
+      console.log(`✅ Model ${modelName} is working`);
+      return modelName;
+    } catch (error: any) {
+      console.log(`❌ Model ${modelName} failed: ${error.message}`);
+    }
+  }
+  return null;
+}
+
+// Function to call with retry and fallback logic
+async function callWithRetry<T>(fn: () => Promise<T>, maxRetries: number = 3): Promise<T> {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error: any) {
+      console.log(`❌ Attempt ${attempt} failed: ${error.message}`);
+      
+      if (attempt === maxRetries) {
+        throw error;
+      }
+      
+      // If it's a 503 error, try a different model
+      if (error.message.includes('503') || error.message.includes('high demand')) {
+        console.log("🔄 Model experiencing high demand, trying fallback...");
+        workingModel = null; // Reset to force model selection
+      }
+      
+      // Wait before retry
+      await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+    }
+  }
+  
+  throw new Error("All retry attempts failed");
+}
+
+// Initialize working model on first use
+async function getWorkingModel(): Promise<string> {
+  if (workingModel) return workingModel;
+  
+  workingModel = await findWorkingModel();
+  if (!workingModel) {
+    throw new Error("No working Gemini models found. Check your API key and permissions.");
+  }
+  
+  return workingModel;
+}
+
+// Export initialization function for server startup
+export async function initializeGemini(): Promise<void> {
+  if (!genAI) {
+    console.warn("⚠️ Gemini AI not initialized - missing API key");
+    return;
+  }
+  
+  try {
+    const model = await getWorkingModel();
+    console.log(`✅ Gemini model loaded successfully: ${model}`);
+  } catch (error: any) {
+    console.error("❌ Failed to initialize Gemini:", error.message);
+    throw error;
+  }
 }
 
 export type IncomeStability = "low" | "medium" | "high";
@@ -60,50 +147,77 @@ export interface FinalAdviceResult {
   explanation: string;
 }
 
-async function callGemini<T>(systemPrompt: string, userPrompt: string): Promise<T> {
-  if (!GEMINI_API_KEY) {
+// Simple text reply for direct questions
+export async function callGemini(prompt: string): Promise<string> {
+  if (!genAI) {
     throw new Error("GEMINI_API_KEY is not configured on the server.");
   }
 
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+  return await callWithRetry(async () => {
+    const modelName = await getWorkingModel();
+    console.log(`🤖 Using Gemini model: ${modelName}`);
+    console.log(`📝 Prompt length: ${prompt.length} characters`);
+    
+    const model = genAI.getGenerativeModel({ model: modelName });
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+    
+    console.log(`✅ Gemini response received: ${text.length} characters`);
+    return text;
+  });
+}
+
+// Internal helper for JSON-style responses
+async function callGeminiJson<T>(systemPrompt: string, userPrompt: string): Promise<T> {
+  if (!genAI) {
+    throw new Error("GEMINI_API_KEY is not configured on the server.");
+  }
+
+  return await callWithRetry(async () => {
+    const modelName = await getWorkingModel();
+    console.log(`🤖 Using Gemini model for JSON: ${modelName}`);
+    
+    const model = genAI.getGenerativeModel({
+      model: modelName,
+      generationConfig: {
+        temperature: 0.4,
+        maxOutputTokens: 1024,
       },
-      body: JSON.stringify({
-        contents: [
-          {
-            role: "user",
-            parts: [{ text: `${systemPrompt}\n\n${userPrompt}` }],
-          },
-        ],
-        generationConfig: {
-          temperature: 0.4,
-          maxOutputTokens: 512,
-        },
-      }),
-    },
-  );
+    });
 
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`Gemini API error: ${response.status} ${text}`);
-  }
+    const prompt = `${systemPrompt}\n\n${userPrompt}`;
+    console.log(`📝 JSON prompt length: ${prompt.length} characters`);
+    
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+    
+    console.log(`✅ Gemini JSON response received: ${text.length} characters`);
 
-  const json = (await response.json()) as any;
-  const text = json?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!text || typeof text !== "string") {
+      throw new Error("Gemini API returned an unexpected response format.");
+    }
 
-  if (!text || typeof text !== "string") {
-    throw new Error("Gemini API returned an unexpected response format.");
-  }
-
-  try {
-    return JSON.parse(text) as T;
-  } catch {
-    throw new Error("Failed to parse Gemini JSON response.");
-  }
+    try {
+      console.log("🔍 Raw Gemini response:", text);
+      
+      // Strip markdown code blocks if present
+      let cleanText = text.trim();
+      if (cleanText.startsWith('```json')) {
+        cleanText = cleanText.replace(/```json\s*/, '').replace(/```\s*$/, '');
+      } else if (cleanText.startsWith('```')) {
+        cleanText = cleanText.replace(/```\s*/, '').replace(/```\s*$/, '');
+      }
+      
+      console.log("🔧 Cleaned JSON response:", cleanText);
+      return JSON.parse(cleanText) as T;
+    } catch (error) {
+      console.error("❌ JSON Parse Error:", error);
+      console.error("❌ Response that failed to parse:", text);
+      throw new Error("Failed to parse Gemini JSON response.");
+    }
+  });
 }
 
 export async function analyzeUserQuery(
@@ -135,7 +249,7 @@ Return a JSON object ONLY, no explanation, following this TypeScript type:
 If something is not clear, use null for that field. Use very simple, lower-case intent labels.
 `;
 
-  const raw = await callGemini<{
+  const raw = await callGeminiJson<{
     intent: string;
     income: number | null;
     occupation: string | null;
@@ -159,18 +273,56 @@ If something is not clear, use null for that field. Use very simple, lower-case 
 
 export async function generateFinalAdvice(
   input: FinalAdviceInput,
-): Promise<FinalAdviceResult> {
-  const systemPrompt =
-    'You are a friendly financial advisor for rural communities in India. ' +
-    "You explain in very simple, conversational language, avoiding jargon. " +
-    "Assume the user may have low literacy, so be clear and kind. Use Indian Rupees (₹).";
+): Promise<FinalAdviceResult & { detectedLanguage: DetectedLanguage }> {
+  // Detect user's language from their query
+  const languageDetection = detectLanguage(input.userQuery);
+  const detectedLanguage = languageDetection.language;
+  const languageInstruction = getLanguagePromptInstruction(detectedLanguage);
+  
+  console.log(`🔍 Detected user language: ${detectedLanguage} (confidence: ${(languageDetection.confidence * 100).toFixed(1)}%)`);
+  console.log(`📊 Language breakdown:`, languageDetection.details);
+
+  const systemPrompt = `You are SAKHI, a financial assistant designed to help users with simple financial advice.
+
+Follow these rules strictly:
+
+1. Answer ONLY the user's question.
+2. Do NOT add extra explanations unrelated to the query.
+3. Do NOT include summaries, sections, headings, or formatting unless the user asks.
+4. Do NOT add translations or responses in multiple languages.
+5. Respond ONLY in the language requested by the user.
+
+Language Enforcement Rules:
+
+• If the user asks for Tamil, respond ONLY in Tamil.
+• Do not include English words when Tamil is requested.
+• Use clear, natural Tamil that is easy to understand.
+• The entire response must be readable aloud by Tamil text-to-speech.
+• If the user asks for Hindi, respond ONLY in Hindi.
+• If the user asks for Telugu, respond ONLY in Telugu.
+• If the user asks for English, respond ONLY in English.
+
+Response Style Rules:
+
+• Keep responses short and focused.
+• Avoid long paragraphs.
+• Provide direct guidance related to the user's question.
+• Do not repeat the question.
+• Do not add extra educational content unless asked.
+
+Output Rules:
+
+• Output plain text only.
+• No headings.
+• No separators like "Summary" or "—".
+• No bilingual responses.
+
+User language: ${detectedLanguage.toUpperCase()}
+User query: "${input.userQuery}"`;
 
   const topScheme = input.schemes[0];
 
   const userPrompt = `
-User question: "${input.userQuery}"
-Detected intent: ${input.intent}
-
 User context:
 - Monthly income: ₹${input.userContext.income}
 - Monthly expenses: ₹${input.userContext.expenses}
@@ -180,7 +332,6 @@ User context:
 Financial simulation:
 - Monthly savings: ₹${input.simulation.monthlySavings}
 - Yearly savings: ₹${input.simulation.yearlySavings}
-- 3-year projection (if saving same amount): ₹${input.simulation.threeYearProjection}
 - Safe loan EMI per month: ₹${input.simulation.safeLoanEMI}
 
 Financial health:
@@ -192,25 +343,17 @@ Top matching scheme (if any):
 - Max loan: ${topScheme ? "₹" + topScheme.maxLoan : "N/A"}
 - Description: ${topScheme?.description || "N/A"}
 
-Other schemes count: ${input.schemes.length}
-
-Now write a short explanation (150-250 words) that:
-- Answers the user's question directly
-- Explains if taking a loan is safe or risky based on safe EMI and health score
-- Mentions the best government scheme (if available) and why it fits
-- Gives 2-3 simple next steps (for example: save a fixed amount, visit a bank, ask about a named scheme)
-- Uses very simple sentences and short paragraphs
-
 Return a JSON object ONLY:
 {
   "explanation": "..."
 }
 `;
 
-  const result = await callGemini<{ explanation: string }>(systemPrompt, userPrompt);
+  const result = await callGeminiJson<{ explanation: string }>(systemPrompt, userPrompt);
 
   return {
     explanation: result.explanation,
+    detectedLanguage
   };
 }
 

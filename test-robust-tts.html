@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robust Multilingual TTS Test - SAKHI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #ff6b35;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #e55a2b;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .voice-info {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        textarea {
+            width: 100%;
+            height: 80px;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .result-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+        }
+        .success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        .error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        .lang-en { border-left-color: #28a745; }
+        .lang-hi { border-left-color: #dc3545; }
+        .lang-ta { border-left-color: #ffc107; }
+        .lang-te { border-left-color: #6f42c1; }
+    </style>
+</head>
+<body>
+    <h1>🗣️ Robust Multilingual TTS Test - SAKHI</h1>
+    
+    <div class="test-section">
+        <h2>TTS System Status</h2>
+        <div id="systemStatus" class="voice-info">Initializing TTS system...</div>
+        <button onclick="initializeTTSSystem()" id="initBtn">🔄 Initialize TTS</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Available Voices</h2>
+        <div id="voiceList" class="voice-info">Loading voices...</div>
+        <button onclick="refreshVoices()">🔄 Refresh Voices</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Language Detection Tests</h2>
+        <p>Test Unicode-based language detection for different scripts:</p>
+        
+        <h3>English Text</h3>
+        <textarea id="englishText">I need help with a loan for my small business. Are there any government schemes available?</textarea>
+        <button onclick="testLanguageDetection('english')">🔍 Detect English</button>
+        
+        <h3>Hindi Text</h3>
+        <textarea id="hindiText">मेरे छोटे व्यवसाय के लिए मुझे ऋण की जरूरत है। क्या कोई सरकारी योजना उपलब्ध है?</textarea>
+        <button onclick="testLanguageDetection('hindi')">🔍 Detect Hindi</button>
+        
+        <h3>Tamil Text</h3>
+        <textarea id="tamilText">என் சிறிய வணிகத்திற்கு கடன் தேவை. என்ன அரசு திட்டங்கள் உள்ளன?</textarea>
+        <button onclick="testLanguageDetection('tamil')">🔍 Detect Tamil</button>
+        
+        <h3>Telugu Text</h3>
+        <textarea id="teluguText">నా చిన్న వ్యాపారానికి రుణం కావాలి. ఏమి ప్రభుత్వ పథకాలు అందుబాటులో ఉన్నాయి?</textarea>
+        <button onclick="testLanguageDetection('telugu')">🔍 Detect Telugu</button>
+        
+        <div id="detectionResults" class="voice-info">Detection results will appear here...</div>
+    </div>
+
+    <div class="test-section">
+        <h2>Gemini Response Simulation Tests</h2>
+        <p>Test how the system handles actual Gemini API responses in different languages:</p>
+        
+        <div class="result-box lang-en">
+            <strong>English Gemini Response:</strong>
+            <div id="englishGemini">For saving ₹500 a month, you don't need a loan right now. Your financial health is good. I recommend the Pradhan Mantri Mudra Yojana scheme for small businesses. You can apply at your nearest bank.</div>
+            <button onclick="testGeminiResponse('englishGemini')" id="testEnBtn">🗣️ Speak English</button>
+        </div>
+        
+        <div class="result-box lang-hi">
+            <strong>हिन्दी Gemini Response:</strong>
+            <div id="hindiGemini">हर महीने ₹500 बचाने के लिए, आपको अभी ऋण की जरूरत नहीं है। आपका वित्तीय स्वास्थ्य अच्छा है। मैं छोटे व्यवसायों के लिए प्रधानमंत्री मुद्रा योजना की सिफारिश करता हूं। आप अपने नजदीकी बैंक में आवेदन कर सकते हैं।</div>
+            <button onclick="testGeminiResponse('hindiGemini')" id="testHiBtn">🗣️ Speak Hindi</button>
+        </div>
+        
+        <div class="result-box lang-ta">
+            <strong>தமிழ் Gemini Response:</strong>
+            <div id="tamilGemini">ஒவ்வொரு மாதமும் ₹500 சேமிக்க, உங்களுக்கு இப்போது கடன் தேவையில்லை. உங்கள் நிதி ஆரோக்கியம் நல்லது. நான் சிறிய வணிகங்களுக்கு பிரதம் மந்திரி முத்ரா திட்டத்தை பரிந்துரைக்கிறேன். நீங்கள் உங்கள் அருகிலுள்ள வங்கியில் விண்ணப்பிக்கலாம்.</div>
+            <button onclick="testGeminiResponse('tamilGemini')" id="testTaBtn">🗣️ Speak Tamil</button>
+        </div>
+        
+        <div class="result-box lang-te">
+            <strong>తెలుగు Gemini Response:</strong>
+            <div id="teluguGemini">ప్రతి నెలకు ₹500 ఆదా చేయడానికి, మీకు ఇప్పుడు రుణం అవసరం లేదు. మీ ఆర్థిక ఆరోగ్యం మంచిది. నేను చిన్న వ్యాపారాల కోసం ప్రధానమంత్రి ముద్రా పథకాన్ని సిఫార్సు చేస్తున్నాను. మీరు మీ దగ్గరి బ్యాంకులో దరఖాస్తు చేయవచ్చు.</div>
+            <button onclick="testGeminiResponse('teluguGemini')" id="testTeBtn">🗣️ Speak Telugu</button>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>TTS Execution Logs</h2>
+        <div id="ttsLogs" class="voice-info">TTS execution logs will appear here...</div>
+        <button onclick="clearLogs()">🗑️ Clear Logs</button>
+    </div>
+
+    <script>
+        // Robust TTS System Implementation
+        let voices = [];
+        let ttsReady = false;
+
+        // Unicode patterns for language detection
+        const LANGUAGE_PATTERNS = {
+            hindi: /[\u0900-\u097F]/g,
+            tamil: /[\u0B80-\u0BFF]/g,
+            telugu: /[\u0C00-\u0C7F]/g,
+            latin: /[a-zA-Z]/g
+        };
+
+        function detectLanguage(text) {
+            if (!text || typeof text !== 'string') return 'en';
+
+            const counts = {
+                en: (text.match(LANGUAGE_PATTERNS.latin) || []).length,
+                hi: (text.match(LANGUAGE_PATTERNS.hindi) || []).length,
+                ta: (text.match(LANGUAGE_PATTERNS.tamil) || []).length,
+                te: (text.match(LANGUAGE_PATTERNS.telugu) || []).length
+            };
+
+            let maxLang = 'en';
+            let maxCount = counts.en;
+
+            for (const [lang, count] of Object.entries(counts)) {
+                if (count > maxCount) {
+                    maxLang = lang;
+                    maxCount = count;
+                }
+            }
+
+            logTTS(`🔍 Language detection: ${JSON.stringify(counts)} → ${maxLang}`);
+            return maxLang;
+        }
+
+        function getLanguageCode(language) {
+            const codes = {
+                en: 'en-IN',
+                hi: 'hi-IN',
+                ta: 'ta-IN',
+                te: 'te-IN'
+            };
+            return codes[language] || 'en-IN';
+        }
+
+        async function loadVoices(timeout = 5000) {
+            return new Promise((resolve, reject) => {
+                if (!('speechSynthesis' in window)) {
+                    reject(new Error('Speech synthesis not supported'));
+                    return;
+                }
+
+                const availableVoices = window.speechSynthesis.getVoices();
+                
+                if (availableVoices.length > 0) {
+                    voices = availableVoices;
+                    logTTS(`🗣️ Voices already loaded: ${voices.length} voices`);
+                    resolve(voices);
+                    return;
+                }
+
+                logTTS('⏳ Waiting for voices to load...');
+                
+                let voicesLoaded = false;
+                const timeoutId = setTimeout(() => {
+                    if (!voicesLoaded) {
+                        logTTS('⚠️ Voice loading timeout');
+                        resolve([]);
+                    }
+                }, timeout);
+
+                const handleVoicesChanged = () => {
+                    const loadedVoices = window.speechSynthesis.getVoices();
+                    voices = loadedVoices;
+                    logTTS(`🗣️ Voices loaded: ${loadedVoices.length} voices`);
+                    
+                    const voicesByLang = loadedVoices.reduce((acc, voice) => {
+                        const lang = voice.lang.split('-')[0];
+                        if (!acc[lang]) acc[lang] = [];
+                        acc[lang].push(voice.name);
+                        return acc;
+                    }, {});
+                    
+                    logTTS('🗣️ Available voices by language: ' + JSON.stringify(voicesByLang));
+                    
+                    voicesLoaded = true;
+                    clearTimeout(timeoutId);
+                    window.speechSynthesis.onvoiceschanged = null;
+                    resolve(loadedVoices);
+                };
+
+                window.speechSynthesis.onvoiceschanged = handleVoicesChanged;
+            });
+        }
+
+        function findBestVoice(language) {
+            const langCode = getLanguageCode(language);
+            
+            logTTS(`🔍 Finding voice for ${language} (${langCode}) from ${voices.length} voices`);
+            
+            // Try exact match first
+            let voice = voices.find(v => v.lang === langCode);
+            if (voice) {
+                logTTS(`✅ Found exact match: ${voice.name} (${voice.lang})`);
+                return voice;
+            }
+
+            // Try language prefix match
+            voice = voices.find(v => v.lang.startsWith(language));
+            if (voice) {
+                logTTS(`✅ Found prefix match: ${voice.name} (${voice.lang})`);
+                return voice;
+            }
+
+            // Fallback to English
+            voice = voices.find(v => v.lang.startsWith('en'));
+            if (voice) {
+                logTTS(`⚠️ Fallback to English: ${voice.name} (${voice.lang})`);
+                return voice;
+            }
+
+            logTTS(`❌ No voice found for ${language}`);
+            return null;
+        }
+
+        async function speakResponse(text) {
+            const startTime = Date.now();
+            
+            try {
+                logTTS(`🎤 Starting TTS for: "${text.substring(0, 50)}${text.length > 50 ? '...' : ''}"`);
+                
+                if (!text || typeof text !== 'string') {
+                    throw new Error('Invalid text input');
+                }
+
+                // Detect language
+                const detectedLanguage = detectLanguage(text);
+                const langCode = getLanguageCode(detectedLanguage);
+                
+                // Load voices if needed
+                if (voices.length === 0) {
+                    await loadVoices();
+                }
+                
+                // Find best voice
+                const selectedVoice = findBestVoice(detectedLanguage);
+                
+                // Create utterance
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = selectedVoice ? selectedVoice.lang : langCode;
+                utterance.rate = detectedLanguage === 'hi' ? 0.85 : 1.0;
+                utterance.pitch = 1.0;
+                utterance.volume = 1.0;
+                
+                if (selectedVoice) {
+                    utterance.voice = selectedVoice;
+                }
+                
+                // Cancel any ongoing speech
+                window.speechSynthesis.cancel();
+                
+                // Setup event handlers
+                return new Promise((resolve) => {
+                    utterance.onstart = () => {
+                        logTTS(`🎤 Started speaking ${detectedLanguage.toUpperCase()} with voice: ${selectedVoice?.name || 'default'}`);
+                    };
+                    
+                    utterance.onend = () => {
+                        const endTime = Date.now();
+                        const duration = endTime - startTime;
+                        logTTS(`🔇 Finished speaking ${detectedLanguage.toUpperCase()} in ${duration}ms`);
+                        resolve({ success: true });
+                    };
+                    
+                    utterance.onerror = (event) => {
+                        logTTS(`❌ TTS Error for ${detectedLanguage}: ${event.error}`);
+                        resolve({ success: false });
+                    };
+                    
+                    // Start speaking
+                    window.speechSynthesis.speak(utterance);
+                });
+                
+            } catch (error) {
+                logTTS(`❌ TTS System Error: ${error.message}`);
+                return { success: false };
+            }
+        }
+
+        async function initializeTTSSystem() {
+            const btn = document.getElementById('initBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ Initializing...';
+            
+            try {
+                voices = await loadVoices();
+                ttsReady = voices.length > 0;
+                
+                const statusDiv = document.getElementById('systemStatus');
+                if (ttsReady) {
+                    statusDiv.innerHTML = `✅ TTS System Ready<br>Available voices: ${voices.length}<br>Status: All systems operational`;
+                    statusDiv.className = 'voice-info success';
+                } else {
+                    statusDiv.innerHTML = `❌ TTS System Failed<br>Available voices: ${voices.length}<br>Status: No voices available`;
+                    statusDiv.className = 'voice-info error';
+                }
+                
+                updateVoiceList();
+                
+            } catch (error) {
+                logTTS(`❌ Initialization failed: ${error.message}`);
+                document.getElementById('systemStatus').innerHTML = `❌ TTS System Failed<br>Error: ${error.message}`;
+                document.getElementById('systemStatus').className = 'voice-info error';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🔄 Initialize TTS';
+            }
+        }
+
+        function updateVoiceList() {
+            const voiceList = document.getElementById('voiceList');
+            if (voices.length === 0) {
+                voiceList.innerHTML = 'No voices available';
+                return;
+            }
+            
+            const voicesByLang = voices.reduce((acc, voice) => {
+                const lang = voice.lang.split('-')[0];
+                if (!acc[lang]) acc[lang] = [];
+                acc[lang].push(voice);
+                return acc;
+            }, {});
+            
+            let html = `<strong>Found ${voices.length} voices:</strong><br>`;
+            for (const [lang, langVoices] of Object.entries(voicesByLang)) {
+                html += `<br><strong>${lang.toUpperCase()}:</strong><br>`;
+                langVoices.forEach(voice => {
+                    html += `• ${voice.name} (${voice.lang})<br>`;
+                });
+            }
+            
+            voiceList.innerHTML = html;
+        }
+
+        function refreshVoices() {
+            voices = window.speechSynthesis.getVoices();
+            updateVoiceList();
+            logTTS(`🔄 Voices refreshed: ${voices.length} available`);
+        }
+
+        function testLanguageDetection(type) {
+            const text = document.getElementById(type + 'Text').value;
+            const detected = detectLanguage(text);
+            const results = document.getElementById('detectionResults');
+            
+            results.innerHTML = `🔍 Detected language: ${detected.toUpperCase()}<br>Text: "${text.substring(0, 50)}${text.length > 50 ? '...' : ''}"`;
+        }
+
+        async function testGeminiResponse(elementId) {
+            if (!ttsReady) {
+                logTTS('⚠️ TTS system not ready, please initialize first');
+                return;
+            }
+            
+            const text = document.getElementById(elementId).textContent;
+            const btn = document.getElementById('test' + elementId.charAt(0).toUpperCase() + elementId.slice(1).replace('Gemini', '') + 'Btn');
+            
+            btn.disabled = true;
+            btn.textContent = '🗣️ Speaking...';
+            
+            try {
+                const result = await speakResponse(text);
+                if (result.success) {
+                    logTTS(`✅ Successfully spoke ${elementId}`);
+                } else {
+                    logTTS(`❌ Failed to speak ${elementId}`);
+                }
+            } catch (error) {
+                logTTS(`❌ Error speaking ${elementId}: ${error.message}`);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🗣️ Speak ' + elementId.charAt(0).toUpperCase() + elementId.slice(1).replace('Gemini', '');
+            }
+        }
+
+        function logTTS(message) {
+            const logs = document.getElementById('ttsLogs');
+            const timestamp = new Date().toLocaleTimeString();
+            logs.innerHTML = `[${timestamp}] ${message}<br>` + logs.innerHTML;
+        }
+
+        function clearLogs() {
+            document.getElementById('ttsLogs').innerHTML = 'Logs cleared...';
+        }
+
+        // Initialize on load
+        window.onload = () => {
+            initializeTTSSystem();
+        };
+    </script>
+</body>
+</html>

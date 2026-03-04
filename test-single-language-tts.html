@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Single-Language TTS Test - SAKHI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #ff6b35;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #e55a2b;
+        }
+        .voice-info {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        .lang-en { border-left-color: #28a745; }
+        .lang-hi { border-left-color: #dc3545; }
+        .lang-ta { border-left-color: #ffc107; }
+        .lang-te { border-left-color: #6f42c1; }
+        .result-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            border-left: 4px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <h1>🗣️ Single-Language TTS Test - SAKHI</h1>
+    
+    <div class="test-section">
+        <h2>Language Detection Test</h2>
+        <p>Test different language inputs to see how the system detects and responds in the same language.</p>
+        
+        <h3>English Input</h3>
+        <textarea id="englishInput">I need help with a loan for my small farm. What government schemes are available?</textarea>
+        <button onclick="testLanguageDetection('en')">🔍 Test English Detection</button>
+        
+        <h3>Hindi Input</h3>
+        <textarea id="hindiInput">मेरे छोटे खेत के लिए मुझे ऋण की जरूरत है। कौन सी सरकारी योजनाएं उपलब्ध हैं?</textarea>
+        <button onclick="testLanguageDetection('hi')">🔍 Test Hindi Detection</button>
+        
+        <h3>Tamil Input</h3>
+        <textarea id="tamilInput">என் சிறிய பண்ணைக்கு கடன் தேவை. என்ன அரசு திட்டங்கள் உள்ளன?</textarea>
+        <button onclick="testLanguageDetection('ta')">🔍 Test Tamil Detection</button>
+        
+        <h3>Telugu Input</h3>
+        <textarea id="teluguInput">నా చిన్న పొలానికి రుణం కావాలి. ఏమి ప్రభుత్వ పథకాలు అందుబాటులో ఉన్నాయి?</textarea>
+        <button onclick="testLanguageDetection('te')">🔍 Test Telugu Detection</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Language Detection Results</h2>
+        <div id="detectionResults" class="voice-info">Detection results will appear here...</div>
+    </div>
+
+    <div class="test-section">
+        <h2>Single-Language TTS Test</h2>
+        <p>Test how the TTS speaks responses in the detected language without mixing languages.</p>
+        
+        <h3>Sample Responses</h3>
+        <div class="result-box lang-en">
+            <strong>English Response:</strong>
+            <div id="englishResponse">For saving ₹500 a month, you don't need a loan right now. Your financial health is good. I recommend the Pradhan Mantri Mudra Yojana scheme for small businesses.</div>
+            <button onclick="testSingleLanguageTTS('en', document.getElementById('englishResponse').textContent)">🗣️ Speak English</button>
+        </div>
+        
+        <div class="result-box lang-hi">
+            <strong>हिन्दी Response:</strong>
+            <div id="hindiResponse">हर महीने ₹500 बचाने के लिए, आपको अभी ऋण की जरूरत नहीं है। आपका वित्तीय स्वास्थ्य अच्छा है। मैं छोटे व्यवसायों के लिए प्रधानमंत्री मुद्रा योजना की सिफारिश करता हूं।</div>
+            <button onclick="testSingleLanguageTTS('hi', document.getElementById('hindiResponse').textContent)">🗣️ Speak Hindi</button>
+        </div>
+        
+        <div class="result-box lang-ta">
+            <strong>தமிழ் Response:</strong>
+            <div id="tamilResponse">ஒவ்வொரு மாதமும் ₹500 சேமிக்க, உங்களுக்கு இப்போது கடன் தேவையில்லை. உங்கள் நிதி ஆரோக்கியம் நல்லது. நான் சிறிய வணிகங்களுக்கு பிரதம் மந்திரி முத்ரா திட்டத்தை பரிந்துரைக்கிறேன்.</div>
+            <button onclick="testSingleLanguageTTS('ta', document.getElementById('tamilResponse').textContent)">🗣️ Speak Tamil</button>
+        </div>
+        
+        <div class="result-box lang-te">
+            <strong>తెలుగు Response:</strong>
+            <div id="teluguResponse">ప్రతి నెలకు ₹500 ఆదా చేయడానికి, మీకు ఇప్పుడు రుణం అవసరం లేదు. మీ ఆర్థిక ఆరోగ్యం మంచిది. నేను చిన్న వ్యాపారాల కోసం ప్రధానమంత్రి ముద్రా పథకాన్ని సిఫార్సు చేస్తున్నాను.</div>
+            <button onclick="testSingleLanguageTTS('te', document.getElementById('teluguResponse').textContent)">🗣️ Speak Telugu</button>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>TTS Execution Log</h2>
+        <div id="ttsLog" class="voice-info">TTS execution logs will appear here...</div>
+    </div>
+
+    <script>
+        // Language Detection System (simplified)
+        function detectLanguage(text) {
+            const patterns = {
+                hindi: /[\u0900-\u097F]/g,
+                tamil: /[\u0B80-\u0BFF]/g,
+                telugu: /[\u0C00-\u0C7F]/g,
+                latin: /[a-zA-Z]/g
+            };
+
+            const counts = {
+                en: (text.match(patterns.latin) || []).length,
+                hi: (text.match(patterns.hindi) || []).length,
+                ta: (text.match(patterns.tamil) || []).length,
+                te: (text.match(patterns.telugu) || []).length
+            };
+
+            let maxLang = 'en';
+            let maxCount = counts.en;
+
+            for (const [lang, count] of Object.entries(counts)) {
+                if (count > maxCount) {
+                    maxLang = lang;
+                    maxCount = count;
+                }
+            }
+
+            const total = Object.values(counts).reduce((a, b) => a + b, 0);
+            const confidence = total > 0 ? maxCount / total : 0;
+
+            return {
+                language: maxLang,
+                confidence,
+                details: counts
+            };
+        }
+
+        function testLanguageDetection(expectedLang) {
+            const text = document.getElementById(`${expectedLang}Input`).value;
+            const result = detectLanguage(text);
+            
+            const isCorrect = result.language === expectedLang;
+            const status = isCorrect ? '✅' : '❌';
+            
+            logDetection(`${status} Expected: ${expectedLang}, Detected: ${result.language} (${(result.confidence * 100).toFixed(1)}% confidence)`);
+            logDetection(`📊 Character counts: ${JSON.stringify(result.details)}`);
+        }
+
+        function testSingleLanguageTTS(language, text) {
+            if (!('speechSynthesis' in window)) {
+                logTTS('❌ Speech synthesis not supported');
+                return;
+            }
+
+            // Cancel any ongoing speech
+            speechSynthesis.cancel();
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            
+            // Language-specific settings
+            const langCodes = {
+                en: 'en-IN',
+                hi: 'hi-IN',
+                ta: 'ta-IN',
+                te: 'te-IN'
+            };
+
+            const rates = {
+                en: 1.0,
+                hi: 0.85,
+                ta: 0.9,
+                te: 0.9
+            };
+
+            utterance.lang = langCodes[language];
+            utterance.rate = rates[language];
+            utterance.pitch = 1.0;
+            utterance.volume = 1.0;
+
+            // Get appropriate voice
+            const voices = speechSynthesis.getVoices();
+            const voice = voices.find(v => v.lang === langCodes[language]) || 
+                          voices.find(v => v.lang.startsWith(language)) ||
+                          voices.find(v => v.lang.startsWith('en'));
+
+            if (voice) {
+                utterance.voice = voice;
+                logTTS(`🗣️ Speaking ${language.toUpperCase()} with voice: ${voice.name} (${voice.lang})`);
+            } else {
+                logTTS(`⚠️ No voice found for ${language}, using default`);
+            }
+
+            utterance.onstart = () => {
+                logTTS(`🎤 Started speaking ${language.toUpperCase()}: "${text.substring(0, 50)}${text.length > 50 ? '...' : ''}"`);
+            };
+
+            utterance.onend = () => {
+                logTTS(`🔇 Finished speaking ${language.toUpperCase()}`);
+            };
+
+            utterance.onerror = (event) => {
+                logTTS(`❌ TTS Error for ${language}: ${event.error}`);
+            };
+
+            speechSynthesis.speak(utterance);
+        }
+
+        function logDetection(message) {
+            const log = document.getElementById('detectionResults');
+            const timestamp = new Date().toLocaleTimeString();
+            log.innerHTML = `[${timestamp}] ${message}<br>` + log.innerHTML;
+        }
+
+        function logTTS(message) {
+            const log = document.getElementById('ttsLog');
+            const timestamp = new Date().toLocaleTimeString();
+            log.innerHTML = `[${timestamp}] ${message}<br>` + log.innerHTML;
+        }
+
+        // Initialize
+        window.onload = () => {
+            const voices = speechSynthesis.getVoices();
+            logTTS(`🗣️ TTS Ready: ${voices.length} voices available`);
+            
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = () => {
+                    const voices = speechSynthesis.getVoices();
+                    logTTS(`🗣️ Voices updated: ${voices.length} available`);
+                };
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,8 +1,9 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Mic, Send, MicOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage, type Language } from "@/i18n/LanguageContext";
+import { speakResponse, initializeTTS, type DetectedLanguage } from "@/utils/robust-tts";
 
 type Message = { role: "user" | "assistant"; content: string };
 
@@ -15,32 +16,40 @@ const DashboardAssistant = () => {
   const [input, setInput] = useState("");
   const [isListening, setIsListening] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [ttsReady, setTtsReady] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null as any);
   const audioChunksRef = useRef<Blob[]>([]);
   const { t, language } = useLanguage();
+  const env = (import.meta as any).env || {};
+  const API_BASE: string =
+    env.VITE_API_BASE_URL || (env.DEV ? "http://localhost:3001" : "");
 
-  const getLangCode = (lang: Language): string => {
-    switch (lang) {
-      case "hi":
-        return "hi-IN";
-      case "ta":
-        return "ta-IN";
-      case "te":
-        return "te-IN";
-      default:
-        return "en-IN";
+  // Initialize robust TTS system
+  useEffect(() => {
+    initializeTTS().then((ready) => {
+      setTtsReady(ready);
+      console.log(`✅ Robust TTS system ${ready ? 'ready' : 'failed'}`);
+    });
+  }, []);
+
+  const speak = async (text: string, detectedLanguage?: DetectedLanguage) => {
+    if (!ttsReady) {
+      console.warn('⚠️ TTS system not ready yet');
+      return;
     }
-  };
-
-  const speak = (text: string) => {
-    if (typeof window === "undefined") return;
-    if (!("speechSynthesis" in window)) return;
-    if (!text) return;
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = getLangCode(language);
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(utterance);
+    
+    if (!text || !text.trim()) return;
+    
+    console.log(`🎤 Speaking text with robust TTS:`, text.substring(0, 50) + (text.length > 50 ? '...' : ''));
+    
+    try {
+      const debug = await speakResponse(text);
+      if (!debug.success) {
+        console.warn('⚠️ TTS completed with issues:', debug);
+      }
+    } catch (error) {
+      console.error('❌ TTS failed:', error);
+    }
   };
 
   const handleSend = async (overrideText?: string) => {
@@ -53,7 +62,7 @@ const DashboardAssistant = () => {
 
     try {
       setIsLoading(true);
-      const res = await fetch("/api/advisor", {
+      const res = await fetch(`${API_BASE}/api/advisor`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -87,40 +96,20 @@ const DashboardAssistant = () => {
         yearlySavings?: number;
         financialHealthScore?: number;
         riskLevel?: string;
+        detectedLanguage?: DetectedLanguage;
       };
 
+      // Use the single-language explanation from AI
       const explanation =
         data.explanation ||
         "मैंने आपका सवाल समझा, लेकिन फिलहाल विस्तृत जवाब नहीं दे पाई।\n\nI understood your question but could not give a detailed answer right now.";
 
-      const summaryParts: string[] = [];
-      if (data.recommendation) {
-        summaryParts.push(`योजना सुझाव: ${data.recommendation}`);
-      }
-      if (data.loanLimit != null) {
-        summaryParts.push(`अधिकतम ऋण: ₹${data.loanLimit}`);
-      }
-      if (data.safeEMI != null) {
-        summaryParts.push(`सुरक्षित EMI (महिना): ₹${data.safeEMI}`);
-      }
-      if (data.yearlySavings != null) {
-        summaryParts.push(`अनुमानित वार्षिक बचत: ₹${data.yearlySavings}`);
-      }
-      if (data.financialHealthScore != null && data.riskLevel) {
-        summaryParts.push(
-          `वित्तीय स्वास्थ्य स्कोर: ${data.financialHealthScore} (${data.riskLevel} जोखिम)`,
-        );
-      }
-
-      const combined =
-        explanation +
-        (summaryParts.length
-          ? `\n\n— सारांश —\n${summaryParts.join("\n")}`
-          : "");
-
-      const assistantMsg: Message = { role: "assistant", content: combined };
+      // Create message with only the AI explanation (no bilingual summaries)
+      const assistantMsg: Message = { role: "assistant", content: explanation };
       setMessages((prev) => [...prev, assistantMsg]);
-      speak(explanation);
+      
+      // Speak using the detected language
+      speak(explanation, data.detectedLanguage);
     } catch (err) {
       console.error("Advisor call failed", err);
       const msg =
@@ -157,7 +146,7 @@ const DashboardAssistant = () => {
         return;
       }
 
-      const res = await fetch("/api/stt", {
+      const res = await fetch(`${API_BASE}/api/stt`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
