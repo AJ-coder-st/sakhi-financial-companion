@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Mic, Home, Search, BarChart3, PiggyBank, BookOpen, Users, Settings, 
-  ChevronRight, TrendingUp, Bell, LogOut, Menu, X
+  ChevronRight, TrendingUp, Bell, LogOut, Menu, X, Briefcase
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -15,8 +15,9 @@ import DashboardBudget from "@/components/dashboard/DashboardBudget";
 import DashboardLearn from "@/components/dashboard/DashboardLearn";
 import DashboardSavings from "@/components/dashboard/DashboardSavings";
 import DashboardCommunity from "@/components/dashboard/DashboardCommunity";
+import LearningDashboard from "@/components/entrepreneurship/LearningDashboard";
 
-type TabKey = "home" | "assistant" | "schemes" | "budget" | "learn" | "savings" | "community";
+type TabKey = "home" | "assistant" | "schemes" | "budget" | "learn" | "savings" | "community" | "entrepreneurship";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState<TabKey>("home");
@@ -30,6 +31,7 @@ const Dashboard = () => {
     { key: "budget" as TabKey, label: t("budget"), icon: BarChart3 },
     { key: "savings" as TabKey, label: t("savings"), icon: PiggyBank },
     { key: "learn" as TabKey, label: t("learn"), icon: BookOpen },
+    { key: "entrepreneurship" as TabKey, label: "Entrepreneurship", icon: Briefcase },
     { key: "community" as TabKey, label: t("shg"), icon: Users },
   ];
 
@@ -147,6 +149,7 @@ const Dashboard = () => {
           {activeTab === "budget" && <DashboardBudget />}
           {activeTab === "savings" && <DashboardSavings />}
           {activeTab === "learn" && <DashboardLearn />}
+          {activeTab === "entrepreneurship" && <LearningDashboard />}
           {activeTab === "community" && <DashboardCommunity />}
         </div>
 
@@ -208,6 +211,7 @@ const HomeTab = ({ onNavigate }: { onNavigate: (tab: TabKey) => void }) => {
             { label: t("findSchemes"), icon: Search, tab: "schemes" as TabKey },
             { label: t("addSavings"), icon: PiggyBank, tab: "savings" as TabKey },
             { label: t("continueLearning"), icon: BookOpen, tab: "learn" as TabKey },
+            { label: "Learn Business", icon: Briefcase, tab: "entrepreneurship" as TabKey },
             { label: t("mySHGGroup"), icon: Users, tab: "community" as TabKey },
           ].map((a, i) => (
             <button key={i} onClick={() => onNavigate(a.tab)} className="bg-card rounded-xl p-4 border border-border hover:shadow-sakhi transition-shadow text-left">
