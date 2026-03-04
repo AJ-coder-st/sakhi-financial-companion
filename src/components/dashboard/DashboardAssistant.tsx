@@ -1,14 +1,15 @@
 import { useRef, useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Mic, Send, MicOff } from "lucide-react";
+import { Mic, Send, MicOff, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLanguage, type Language } from "@/i18n/LanguageContext";
 import { speakResponse, initializeTTS, type DetectedLanguage } from "@/utils/robust-tts";
+import LiveTextTranslateScanner from "../LiveTextTranslateScanner";
 
 type Message = { role: "user" | "assistant"; content: string };
 
 const initialMessages: Message[] = [
-  { role: "assistant", content: "नमस्ते सुनीता दीदी! 🙏 मैं आपकी सखी हूँ। आज मैं आपकी क्या मदद कर सकती हूँ?\n\nHello Sunita Didi! I'm your SAKHI. How can I help you today?" },
+  { role: "assistant", content: "नमस्ते सुनीता दीदी! 🙏 मैं आपकी इराइवी हूँ। आज मैं आपकी क्या मदद कर सकती हूँ?\n\nHello Sunita Didi! I'm your IRAIVI. How can I help you today?" },
 ];
 
 const DashboardAssistant = () => {
@@ -17,6 +18,7 @@ const DashboardAssistant = () => {
   const [isListening, setIsListening] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [ttsReady, setTtsReady] = useState(false);
+  const [showScanner, setShowScanner] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null as any);
   const audioChunksRef = useRef<Blob[]>([]);
   const { t, language } = useLanguage();
@@ -239,47 +241,112 @@ const DashboardAssistant = () => {
       });
   };
 
+  const startRecording = () => toggleListening();
+  const stopRecording = () => toggleListening();
+
   return (
-    <div className="flex flex-col h-[calc(100vh-8rem)] max-w-2xl mx-auto">
-      <div className="flex-1 overflow-auto space-y-4 pb-4">
-        {messages.map((m, i) => (
-          <motion.div key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-            <div className={`max-w-[85%] rounded-2xl px-4 py-3 ${m.role === "user" ? "bg-saffron/20 rounded-tr-sm" : "bg-muted rounded-tl-sm"}`}>
-              <p className="text-sm whitespace-pre-line">{m.content}</p>
-            </div>
-          </motion.div>
-        ))}
+    <div className="flex flex-col h-full bg-gray-50">
+      {/* Header with Scanner Toggle */}
+      <div className="flex justify-between items-center p-4 bg-white border-b">
+        <h2 className="text-xl font-semibold text-gray-800">
+          {showScanner ? "Live Text Translator" : "SAKHI Assistant"}
+        </h2>
+        <Button
+          onClick={() => setShowScanner(!showScanner)}
+          variant={showScanner ? "default" : "outline"}
+          className="flex items-center gap-2"
+        >
+          {showScanner ? (
+            <>
+              <Mic className="w-4 h-4" />
+              Chat Assistant
+            </>
+          ) : (
+            <>
+              <Camera className="w-4 h-4" />
+              Live Scanner
+            </>
+          )}
+        </Button>
       </div>
 
-      <div className="border-t border-border pt-4 flex gap-3 items-end">
-        <motion.button
-          whileTap={{ scale: 0.9 }}
-          onClick={toggleListening}
-          className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${isListening ? "bg-destructive" : "bg-saffron-gradient"} shadow-lg`}
-        >
-          {isListening ? (
-            <MicOff className="w-6 h-6 text-destructive-foreground" />
-          ) : (
-            <Mic className="w-6 h-6 text-saffron-foreground" />
-          )}
-        </motion.button>
-        <div className="flex-1 flex bg-muted rounded-2xl">
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && !isLoading && handleSend()}
-            placeholder={t("typeOrSpeak")}
-            className="flex-1 bg-transparent px-4 py-3 text-sm outline-none"
-          />
-          <Button
-            size="sm"
-            onClick={() => handleSend()}
-            className="m-1 rounded-xl bg-primary"
-            disabled={!input.trim() || isLoading}
-          >
-            <Send className="w-4 h-4" />
-          </Button>
-        </div>
+      {/* Content Area */}
+      <div className="flex-1 overflow-hidden">
+        {showScanner ? (
+          <div className="h-full overflow-y-auto">
+            <LiveTextTranslateScanner />
+          </div>
+        ) : (
+          <div className="flex flex-col h-full">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+              {messages.map((msg, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                  className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                >
+                  <div
+                    className={`max-w-[80%] p-3 rounded-2xl ${
+                      msg.role === "user"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground"
+                    }`}
+                  >
+                    {msg.content}
+                  </div>
+                </motion.div>
+              ))}
+              {isLoading && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="flex justify-start"
+                >
+                  <div className="bg-muted text-muted-foreground p-3 rounded-2xl">
+                    <div className="flex space-x-1">
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </div>
+
+            <div className="p-4 bg-white border-t">
+              <div className="flex items-center gap-2">
+                <Button
+                  size="sm"
+                  variant={isListening ? "destructive" : "outline"}
+                  onClick={() => (isListening ? stopRecording() : startRecording())}
+                  className="rounded-xl"
+                >
+                  {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                </Button>
+                <div className="flex-1 flex bg-muted rounded-xl px-2">
+                  <input
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && !isLoading && handleSend()}
+                    placeholder={t("typeOrSpeak")}
+                    className="flex-1 bg-transparent px-4 py-3 text-sm outline-none"
+                  />
+                  <Button
+                    size="sm"
+                    onClick={() => handleSend()}
+                    className="m-1 rounded-xl bg-primary"
+                    disabled={!input.trim() || isLoading}
+                  >
+                    <Send className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

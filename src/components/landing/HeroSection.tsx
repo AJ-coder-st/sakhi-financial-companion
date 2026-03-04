@@ -73,7 +73,7 @@ const HeroSection = () => {
                     <div className="w-7 h-7 rounded-full bg-saffron-gradient flex items-center justify-center">
                       <Mic className="w-4 h-4 text-saffron-foreground" />
                     </div>
-                    <span className="text-sm font-bold text-primary-foreground">SAKHI</span>
+                    <span className="text-sm font-bold text-primary-foreground">IRAIVI</span>
                   </div>
 
                   <div className="flex-1 p-4 flex flex-col gap-3 overflow-hidden">

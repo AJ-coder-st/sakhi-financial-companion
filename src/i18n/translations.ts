@@ -21,13 +21,13 @@ export const translations = {
 
     // Hero
     availableIn: "Available in 10+ Indian Languages",
-    heroTagline: "Your SAKHI, Your Strength",
+    heroTagline: "Your IRAIVI, Your Strength",
     heroDesc:
       "AI-powered financial companion designed for rural women. Voice-first. Feature-phone friendly. Reaching the truly last mile.",
     heroChatGreeting:
-      "Namaste Sunita didi! 🙏 I am your SAKHI. How can I help you today?",
+      "Namaste Sunita didi! 🙏 I am your IRAIVI. How can I help you today?",
     heroChatUserPrompt: "Tell me about savings schemes.",
-    heroChatSakhiReply:
+    heroChatIraiviReply:
       "Of course! I found 3 schemes for you. First is the Mahila Samman Savings Certificate — it gives 7.5% interest. ✨",
     startJourney: "Start Your Journey",
     seeDemo: "See Demo",
@@ -46,13 +46,13 @@ export const translations = {
     ownFeaturePhones: "Own Feature Phones, Not Smartphones",
 
     // How It Works
-    howSakhiWorks: "How",
+    howIraiviWorks: "How IRAIVI Works",
     works: "Works",
     threeSteps: "Three simple steps to financial empowerment",
     connect: "Connect",
     connectDesc: "Sign up with just your phone number. No email, no passwords. Available via WhatsApp, USSD, or app.",
     interact: "Interact",
-    interactDesc: "Speak to SAKHI in your language. She finds schemes, tracks savings, and teaches financial concepts.",
+    interactDesc: "Speak to IRAIVI in your language. She finds schemes, tracks savings, and teaches financial concepts.",
     empower: "Empower",
     empowerDesc: "Access government benefits, build savings habits, and grow your financial confidence — one step at a time.",
     step: "STEP",
@@ -62,11 +62,11 @@ export const translations = {
     modules: "Modules",
     featuresSubtitle: "Everything a rural woman needs for financial independence — in one platform",
     aiVoiceAssistant: "AI Voice Assistant",
-    aiVoiceDesc: "Talk to SAKHI in Hindi, Tamil, Telugu, Bengali & more. She understands you and guides you — no typing needed.",
+    aiVoiceDesc: "Talk to IRAIVI in Hindi, Tamil, Telugu, Bengali & more. She understands you and guides you — no typing needed.",
     financialLiteracy: "Financial Literacy",
     financialLiteracyDesc: "Audio stories, illustrated cards, quizzes. Learn from 'What is money?' to 'Start your business' — at your pace.",
     schemeMatching: "Scheme Matching",
-    schemeMatchingDesc: "50+ government schemes analyzed. SAKHI matches your profile to eligible benefits and guides your application.",
+    schemeMatchingDesc: "50+ government schemes analyzed. IRAIVI matches your profile to eligible benefits and guides your application.",
     budgetTracker: "Budget Tracker",
     budgetTrackerDesc: "\"Maine 50 rupaye sabzi pe kharch kiye\" — voice-log expenses. See monthly summaries and savings streaks.",
     microSavings: "Micro-Savings",
@@ -77,7 +77,7 @@ export const translations = {
     // Schemes Section
     governmentSchemes: "Government",
     schemesMatchedTitle: "Schemes Matched",
-    schemesAnalyzes: "SAKHI analyzes 50+ schemes and matches them to your profile",
+    schemesAnalyzes: "IRAIVI analyzes 50+ schemes and matches them to your profile",
     match: "Match",
 
     // Impact
@@ -95,14 +95,14 @@ export const translations = {
     // CTA
     bePartOf: "Be Part of the",
     revolution: "Revolution",
-    ctaDesc: "SAKHI is more than an app — it's a movement to bring 200 million women into the financial mainstream.",
+    ctaDesc: "IRAIVI is more than an app — it's a movement to bring 200 million women into the financial mainstream.",
     partnerWithUs: "Partner With Us",
     partnerDesc: "NGOs, banks, government agencies",
     invest: "Invest",
     investDesc: "Impact-driven funding for scale",
     buildWithUs: "Build With Us",
     buildDesc: "Open-source contributors welcome",
-    launchSakhi: "Launch SAKHI",
+    launchIraivi: "Launch IRAIVI",
 
     // Footer
     footerDesc: "Smart AI for Kisan & Household Inclusion. Empowering rural women through voice-first financial technology.",
@@ -114,17 +114,17 @@ export const translations = {
     dpdpCompliance: "DPDP Compliance",
     openSource: "Open Source",
     contact: "Contact",
-    madeWithLove: "© 2026 SAKHI — Made with ❤️ for Bharat",
+    madeWithLove: " IRAIVI — Made with for Bharat",
 
     // Dashboard
     home: "Home",
-    sakhiAI: "SAKHI AI",
+    iraiviAI: "IRAIVI AI",
     budget: "Budget",
     savings: "Savings",
     learn: "Learn",
     shg: "SHG",
     backToHome: "Back to Home",
-    greeting: "नमस्ते, सुनीता! 🙏",
+    greeting: "नमस्ते, सुनीता! ",
     totalSavings: "Total Savings",
     schemesMatchedLabel: "Schemes Matched",
     lessonsDone: "Lessons Done",
@@ -133,7 +133,7 @@ export const translations = {
     schemeAlertText: "You may be eligible for <strong>PM Vishwakarma Yojana</strong> — up to ₹3 lakh at 5% interest!",
     checkEligibility: "Check Eligibility",
     quickActions: "Quick Actions",
-    talkToSakhi: "Talk to SAKHI",
+    talkToIraivi: "Talk to IRAIVI",
     logExpense: "Log Expense",
     findSchemes: "Find Schemes",
     addSavings: "Add Savings",
@@ -180,7 +180,7 @@ export const translations = {
     pending: "Pending",
 
     // Dashboard Assistant
-    typeOrSpeak: "Type or speak your question...",
+    typeOrSpeak: "Type or speak your question to IRAIVI...",
 
     // Language
     language: "Language",
@@ -194,14 +194,14 @@ export const translations = {
     getStarted: "शुरू करें",
 
     availableIn: "10+ भारतीय भाषाओं में उपलब्ध",
-    heroTagline: "आपकी सखी, आपकी ताक़त",
+    heroTagline: "आपकी इराइवी, आपकी ताक़त",
     heroDesc:
-      "ग्रामीण महिलाओं के लिए AI-संचालित वित्तीय साथी। आवाज़-प्रथम। फीचर-फोन अनुकूल। सबसे अंतिम छोर तक पहुंचने वाली।",
+      "ग्रामीण महिलाओं के लिए AI-संचालित वित्तीय सहयोगी। वॉइस-प्रथम। फीचर-फोन अनुकूल। वास्तव में अंतिम छोर तक पहुंचने वाली।",
     heroChatGreeting:
-      "नमस्ते सुनीता दीदी! 🙏 मैं आपकी सखी हूँ। आज मैं आपकी क्या मदद कर सकती हूँ?",
+      "नमस्ते सुनीता दीदी! 🙏 मैं आपकी इराइवी हूँ। आज मैं आपकी क्या मदद कर सकती हूँ?",
     heroChatUserPrompt: "मुझे बचत योजना के बारे में बताओ",
-    heroChatSakhiReply:
-      "बिलकुल! आपके लिए 3 योजनाएं मिली हैं। सबसे पहले महिला सम्मान बचत पत्र — इसमें 7.5% ब्याज मिलता है। ✨",
+    heroChatIraiviReply:
+      "बिलकुल! आपके लिए 3 योजनाएं मिली हैं। सबसे पहले महिला सम्मान बचत प्रमाण पत्र — इसमें 7.5% ब्याज मिलता है। ✨",
     startJourney: "अपनी यात्रा शुरू करें",
     seeDemo: "डेमो देखें",
     dpdpCompliant: "DPDP अनुपालन",
@@ -217,13 +217,13 @@ export const translations = {
     withoutBankLiteracy: "बैंकिंग साक्षरता के बिना ग्रामीण महिलाएं",
     ownFeaturePhones: "फीचर फोन रखती हैं, स्मार्टफोन नहीं",
 
-    howSakhiWorks: "कैसे",
+    howIraiviWorks: "इराइवी कैसे काम करती है",
     works: "काम करती है",
     threeSteps: "वित्तीय सशक्तिकरण के तीन सरल कदम",
     connect: "जुड़ें",
-    connectDesc: "बस अपने फोन नंबर से साइन अप करें। कोई ईमेल नहीं, कोई पासवर्ड नहीं।",
+    connectDesc: "बस अपने फोन नंबर से साइन अप करें। कोई ईमेल नहीं, कोई पासवर्ड नहीं। WhatsApp, USSD, या ऐप के माध्यम से उपलब्ध।",
     interact: "बात करें",
-    interactDesc: "SAKHI से अपनी भाषा में बात करें। वह योजनाएं खोजती है, बचत ट्रैक करती है।",
+    interactDesc: "इराइवी से अपनी भाषा में बात करें। वह योजनाएं खोजती है, बचत ट्रैक करती है, और वित्तीय अवधारणाएं सिखाती है।",
     empower: "आगे बढ़ें",
     empowerDesc: "सरकारी लाभ प्राप्त करें, बचत की आदतें बनाएं, और अपना वित्तीय आत्मविश्वास बढ़ाएं।",
     step: "चरण",
@@ -232,11 +232,11 @@ export const translations = {
     modules: "मॉड्यूल",
     featuresSubtitle: "वित्तीय स्वतंत्रता के लिए ग्रामीण महिला को जो कुछ चाहिए — एक मंच पर",
     aiVoiceAssistant: "AI वॉयस असिस्टेंट",
-    aiVoiceDesc: "SAKHI से हिंदी, तमिल, तेलुगु, बंगाली और अन्य भाषाओं में बात करें।",
+    aiVoiceDesc: "हिंदी, तमिल, तेलुगु, बंगाली और अधिक में इराइवी से बात करें। वह आपको समझती है और मार्गदर्शन देती है — टाइपिंग की जरूरत नहीं।",
     financialLiteracy: "वित्तीय साक्षरता",
     financialLiteracyDesc: "ऑडियो कहानियां, चित्रित कार्ड, क्विज़। अपनी गति से सीखें।",
     schemeMatching: "योजना मिलान",
-    schemeMatchingDesc: "50+ सरकारी योजनाओं का विश्लेषण। SAKHI आपकी प्रोफ़ाइल से मिलान करती है।",
+    schemeMatchingDesc: "50+ सरकारी योजनाओं का विश्लेषण किया गया। इराइवी आपकी प्रोफाइल को पात्र लाभों से मिलाती है और आपके आवेदन का मार्गदर्शन करती है।",
     budgetTracker: "बजट ट्रैकर",
     budgetTrackerDesc: "\"मैंने 50 रुपये सब्ज़ी पे खर्च किये\" — आवाज़ से खर्च लॉग करें।",
     microSavings: "माइक्रो-सेविंग्स",
@@ -246,7 +246,7 @@ export const translations = {
 
     governmentSchemes: "सरकारी",
     schemesMatchedTitle: "मिलान योजनाएं",
-    schemesAnalyzes: "SAKHI 50+ योजनाओं का विश्लेषण करके आपकी प्रोफ़ाइल से मिलान करती है",
+    schemesAnalyzes: "इराइवी 50+ योजनाओं का विश्लेषण करके आपकी प्रोफाइल से मिलान करती है",
     match: "मिलान",
 
     impactAnd: "प्रभाव और",
@@ -262,14 +262,14 @@ export const translations = {
 
     bePartOf: "का हिस्सा बनें",
     revolution: "क्रांति",
-    ctaDesc: "SAKHI सिर्फ एक ऐप नहीं — यह 200 मिलियन महिलाओं को वित्तीय मुख्यधारा में लाने का आंदोलन है।",
+    ctaDesc: "इराइवी सिर्फ एक ऐप नहीं है — यह 200 मिलियन महिलाओं को वित्तीय मुख्यधारा में लाने का आंदोलन है।",
     partnerWithUs: "हमारे साथ जुड़ें",
     partnerDesc: "NGO, बैंक, सरकारी एजेंसियां",
     invest: "निवेश करें",
     investDesc: "प्रभाव-संचालित फंडिंग",
     buildWithUs: "हमारे साथ बनाएं",
     buildDesc: "ओपन-सोर्स योगदानकर्ता स्वागत",
-    launchSakhi: "SAKHI लॉन्च करें",
+    launchIraivi: "इराइवी लॉन्च करें",
 
     footerDesc: "किसान और घरेलू समावेशन के लिए स्मार्ट AI। आवाज़-प्रथम वित्तीय तकनीक से ग्रामीण महिलाओं का सशक्तिकरण।",
     platform: "प्लेटफ़ॉर्म",
@@ -351,13 +351,13 @@ export const translations = {
     getStarted: "தொடங்கு",
 
     availableIn: "10+ இந்திய மொழிகளில் கிடைக்கும்",
-    heroTagline: "உங்கள் சகி, உங்கள் பலம்",
+    heroTagline: "உங்கள் இராஇவி, உங்கள் பலம்",
     heroDesc:
       "கிராமப்புற பெண்களுக்கான AI நிதி துணை. குரல்-முதலில். ஃபீச்சர் போன்களுக்கும் ஏற்றது.",
     heroChatGreeting:
       "வணக்கம் சுனிதா அக்கா! 🙏 நான் உங்கள் சகி. இன்று உங்களுக்கு எப்படி உதவலாம்?",
     heroChatUserPrompt: "சேமிப்பு திட்டங்கள் பற்றி சொல்லுங்கள்",
-    heroChatSakhiReply:
+    heroChatIraiviReply:
       "நிச்சயமாக! உங்களுக்கு 3 சேமிப்பு திட்டங்கள் கிடைத்துள்ளன. முதலில் மகிளா சம்மான் சேமிப்பு சான்று — இதில் 7.5% வட்டி கிடைக்கும். ✨",
     startJourney: "பயணத்தை தொடங்கு",
     seeDemo: "டெமோ பார்",
@@ -514,7 +514,7 @@ export const translations = {
     heroChatGreeting:
       "నమస్తే సునీత అక్కా! 🙏 నేను మీ SAKHI. ఈ రోజు మీకు ఎలా సహాయం చేయను?",
     heroChatUserPrompt: "పొదుపు పథకాల గురించి చెప్పండి",
-    heroChatSakhiReply:
+    heroChatIraiviReply:
       "తప్పకుండా! మీ కోసం 3 పొదుపు పథకాలు కనుగొన్నాను. మొదట మహిళా సమ్మాన్ సేవింగ్స్ సర్టిఫికేట్ — ఇందులో 7.5% వడ్డీ లభిస్తుంది. ✨",
     startJourney: "మీ ప్రయాణం ప్రారంభించండి",
     seeDemo: "డెమో చూడండి",

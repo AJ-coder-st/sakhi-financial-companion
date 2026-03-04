@@ -1,8 +1,37 @@
-# Welcome to your Lovable project
+# IRAIVI Financial Companion
 
-## Project info
+## Project Overview
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+IRAIVI (Intelligent Rural AI Financial Assistant) is a voice-first, multilingual financial companion designed specifically for rural women in India. The platform provides:
+
+- **AI Voice Assistant** - Speak in Hindi, Tamil, Telugu, and more
+- **Financial Literacy** - Learn banking concepts through audio stories
+- **Scheme Matching** - Get matched with eligible government schemes
+- **Budget Tracking** - Voice-based expense logging
+- **Micro-Savings** - Visual savings goals and tracking
+- **Community SHG** - Self-Help Group management
+
+## Technology Stack
+
+- **Frontend**: React + TypeScript + Tailwind CSS
+- **Backend**: Node.js + Express
+- **AI**: Google Gemini API
+- **TTS**: Browser Speech Synthesis with Cloud Fallback
+- **OCR**: Tesseract.js for text detection
+- **Translation**: LibreTranslate API
+
+## Features
+
+✅ Voice-first interface
+✅ 10+ Indian languages
+✅ Feature phone compatible
+✅ Government scheme matching
+✅ Real-time translation
+✅ Audio financial education
+✅ Community support
+✅ DPDP compliant
+
+**IRAIVI Financial Companion** - AI-powered financial empowerment platform for rural women in India
 
 ## How can I edit this code?
 

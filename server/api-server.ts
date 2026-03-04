@@ -32,7 +32,7 @@ const upload = multer({
 
 // Health check
 app.get("/api/health", (_req, res) => {
-  res.json({ ok: true, message: "Sakhi API server running" });
+  res.json({ ok: true, message: "IRAIVI API server running" });
 });
 
 // Advisor endpoint (Gemini + finance twin + schemes)
@@ -370,7 +370,7 @@ app.post(
 );
 
 app.listen(port, async () => {
-  console.log(`Sakhi API server listening on http://localhost:${port}`);
+  console.log(`IRAIVI API server listening on http://localhost:${port}`);
   
   // Initialize Gemini on server startup
   try {
