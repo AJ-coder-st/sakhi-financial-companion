@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { BookOpen, Trophy, Users, Target, Zap, Lock, CheckCircle } from 'lucide-react';
-import { QuestCard } from './QuestCard';
-import { CreditProgress } from './CreditProgress';
-import { DailyChallenge } from './DailyChallenge';
-import { MentorConnect } from './MentorConnect';
+import { QuestCardSimple } from './QuestCardSimple';
+// import { CreditProgress } from './CreditProgress';
+// import { DailyChallenge } from './DailyChallenge';
+// import { MentorConnect } from './MentorConnect';
 
 interface Quest {
   id: string;
@@ -162,10 +162,10 @@ const LearningDashboard: React.FC = () => {
       </div>
 
       {/* Daily Challenge */}
-      <DailyChallenge 
+      {/* <DailyChallenge 
         challenge={dailyChallenge}
         onComplete={completeDailyChallenge}
-      />
+      /> */}
 
       {/* Learning Quests */}
       <div className="mb-6">
@@ -175,8 +175,9 @@ const LearningDashboard: React.FC = () => {
         </h2>
         
         <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-2 gap-4">
           {quests.map((quest) => (
-            <QuestCard
+            <QuestCardSimple
               key={quest.id}
               quest={quest}
               onComplete={() => completeQuest(quest.id, quest.credits)}
@@ -184,13 +185,14 @@ const LearningDashboard: React.FC = () => {
             />
           ))}
         </div>
+        </div>
       </div>
 
       {/* Mentor Connect Section */}
-      <MentorConnect 
+      {/* <MentorConnect 
         userCredits={userProfile.credits}
         canConnect={userProfile.credits >= 150}
-      />
+      /> */}
     </div>
   );
 };
