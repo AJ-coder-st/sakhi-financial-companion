@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Mic, Send, MicOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useLanguage } from "@/i18n/LanguageContext";
+import { useLanguage, type Language } from "@/i18n/LanguageContext";
 
 type Message = { role: "user" | "assistant"; content: string };
 
@@ -14,23 +14,240 @@ const DashboardAssistant = () => {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [input, setInput] = useState("");
   const [isListening, setIsListening] = useState(false);
-  const { t } = useLanguage();
+  const [isLoading, setIsLoading] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null as any);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const { t, language } = useLanguage();
 
-  const handleSend = () => {
-    if (!input.trim()) return;
-    const userMsg: Message = { role: "user", content: input };
+  const getLangCode = (lang: Language): string => {
+    switch (lang) {
+      case "hi":
+        return "hi-IN";
+      case "ta":
+        return "ta-IN";
+      case "te":
+        return "te-IN";
+      default:
+        return "en-IN";
+    }
+  };
+
+  const speak = (text: string) => {
+    if (typeof window === "undefined") return;
+    if (!("speechSynthesis" in window)) return;
+    if (!text) return;
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = getLangCode(language);
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const handleSend = async (overrideText?: string) => {
+    const content = (overrideText ?? input).trim();
+    if (!content) return;
+
+    const userMsg: Message = { role: "user", content };
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
 
-    setTimeout(() => {
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: "बहुत अच्छा सवाल! 😊 आपके प्रोफाइल के हिसाब से, मैंने 3 योजनाएं ढूंढी हैं जो आपके लिए सबसे अच्छी हैं। क्या मैं आपको इनके बारे में बताऊँ?\n\nGreat question! Based on your profile, I found 3 schemes best suited for you. Shall I tell you about them?",
+    try {
+      setIsLoading(true);
+      const res = await fetch("/api/advisor", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      ]);
-    }, 1200);
+        body: JSON.stringify({
+          userQuery: content,
+          // TODO: wire real user profile here
+          income: 0,
+          expenses: 0,
+          occupation: "",
+          location: "",
+        }),
+      });
+
+      if (!res.ok) {
+        const error = await res.json().catch(() => ({}));
+        const msg =
+          (error as any)?.error ||
+          "सर्वर से जवाब नहीं आ पाया। थोड़ी देर बाद दोबारा कोशिश करें.\n\nThe server could not answer right now. Please try again in some time.";
+        const assistantMsg: Message = { role: "assistant", content: msg };
+        setMessages((prev) => [...prev, assistantMsg]);
+        speak(msg);
+        return;
+      }
+
+      const data = (await res.json()) as {
+        explanation?: string;
+        recommendation?: string | null;
+        loanLimit?: number | null;
+        safeEMI?: number;
+        yearlySavings?: number;
+        financialHealthScore?: number;
+        riskLevel?: string;
+      };
+
+      const explanation =
+        data.explanation ||
+        "मैंने आपका सवाल समझा, लेकिन फिलहाल विस्तृत जवाब नहीं दे पाई।\n\nI understood your question but could not give a detailed answer right now.";
+
+      const summaryParts: string[] = [];
+      if (data.recommendation) {
+        summaryParts.push(`योजना सुझाव: ${data.recommendation}`);
+      }
+      if (data.loanLimit != null) {
+        summaryParts.push(`अधिकतम ऋण: ₹${data.loanLimit}`);
+      }
+      if (data.safeEMI != null) {
+        summaryParts.push(`सुरक्षित EMI (महिना): ₹${data.safeEMI}`);
+      }
+      if (data.yearlySavings != null) {
+        summaryParts.push(`अनुमानित वार्षिक बचत: ₹${data.yearlySavings}`);
+      }
+      if (data.financialHealthScore != null && data.riskLevel) {
+        summaryParts.push(
+          `वित्तीय स्वास्थ्य स्कोर: ${data.financialHealthScore} (${data.riskLevel} जोखिम)`,
+        );
+      }
+
+      const combined =
+        explanation +
+        (summaryParts.length
+          ? `\n\n— सारांश —\n${summaryParts.join("\n")}`
+          : "");
+
+      const assistantMsg: Message = { role: "assistant", content: combined };
+      setMessages((prev) => [...prev, assistantMsg]);
+      speak(explanation);
+    } catch (err) {
+      console.error("Advisor call failed", err);
+      const msg =
+        "कनेक्शन में दिक्कत आ रही है। कृपया अपना इंटरनेट या नेटवर्क जांचें और दोबारा कोशिश करें।\n\nThere seems to be a connection problem. Please check your internet and try again.";
+      const assistantMsg: Message = { role: "assistant", content: msg };
+      setMessages((prev) => [...prev, assistantMsg]);
+      speak(msg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const transcribeAndSend = async (blob: Blob) => {
+    try {
+      setIsLoading(true);
+
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          const result = reader.result as string;
+          const [, b64] = result.split(",");
+          resolve(b64 || "");
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+
+      if (!base64) {
+        const msg =
+          "आवाज़ रिकॉर्ड नहीं हो पाई। कृपया दोबारा बोलने की कोशिश करें।\n\nCould not capture your voice. Please try speaking again.";
+        const assistantMsg: Message = { role: "assistant", content: msg };
+        setMessages((prev) => [...prev, assistantMsg]);
+        speak(msg);
+        return;
+      }
+
+      const res = await fetch("/api/stt", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          audioBase64: base64,
+          mimeType: blob.type || "audio/webm",
+        }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || !(data as any).text) {
+        const msg =
+          (data as any)?.error ||
+          "आपकी आवाज़ समझने में दिक्कत हुई। कृपया साफ़ बोलकर दोबारा कोशिश करें।\n\nThere was a problem understanding your voice. Please speak clearly and try again.";
+        const assistantMsg: Message = { role: "assistant", content: msg };
+        setMessages((prev) => [...prev, assistantMsg]);
+        speak(msg);
+        return;
+      }
+
+      const transcript = (data as any).text as string;
+      setInput(transcript);
+      await handleSend(transcript);
+    } catch (error) {
+      console.error("STT failed", error);
+      const msg =
+        "वॉयस सर्विस से कनेक्शन नहीं हो पाया। कृपया अपना इंटरनेट चेक करें या टाइप करके सवाल पूछें।\n\nCould not connect to the voice service. Please check your internet or type your question.";
+      const assistantMsg: Message = { role: "assistant", content: msg };
+      setMessages((prev) => [...prev, assistantMsg]);
+      speak(msg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const toggleListening = () => {
+    if (typeof window === "undefined") return;
+
+    if (isListening) {
+      try {
+        mediaRecorderRef.current?.stop();
+      } catch {
+        // ignore
+      }
+      setIsListening(false);
+      return;
+    }
+
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      const msg =
+        "आपके डिवाइस पर माइक्रोफोन एक्सेस उपलब्ध नहीं है। कृपया टाइप करके सवाल पूछें।\n\nMicrophone access is not available on your device. Please type your question instead.";
+      const assistantMsg: Message = { role: "assistant", content: msg };
+      setMessages((prev) => [...prev, assistantMsg]);
+      speak(msg);
+      return;
+    }
+
+    navigator.mediaDevices
+      .getUserMedia({ audio: true })
+      .then((stream) => {
+        const recorder = new MediaRecorder(stream);
+        audioChunksRef.current = [];
+
+        recorder.ondataavailable = (event) => {
+          if (event.data && event.data.size > 0) {
+            audioChunksRef.current.push(event.data);
+          }
+        };
+
+        recorder.onstop = () => {
+          const blob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+          audioChunksRef.current = [];
+          stream.getTracks().forEach((track) => track.stop());
+          void transcribeAndSend(blob);
+        };
+
+        mediaRecorderRef.current = recorder;
+        recorder.start();
+        setIsListening(true);
+      })
+      .catch((err) => {
+        console.error("getUserMedia error", err);
+        const msg =
+          "माइक्रोफोन की अनुमति नहीं मिली। कृपया ब्राउज़र सेटिंग्स में अनुमति दें या टाइप करके सवाल पूछें।\n\nMicrophone permission was denied. Please allow it in your browser settings or type your question.";
+        const assistantMsg: Message = { role: "assistant", content: msg };
+        setMessages((prev) => [...prev, assistantMsg]);
+        speak(msg);
+      });
   };
 
   return (
@@ -48,20 +265,29 @@ const DashboardAssistant = () => {
       <div className="border-t border-border pt-4 flex gap-3 items-end">
         <motion.button
           whileTap={{ scale: 0.9 }}
-          onClick={() => setIsListening(!isListening)}
+          onClick={toggleListening}
           className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 ${isListening ? "bg-destructive" : "bg-saffron-gradient"} shadow-lg`}
         >
-          {isListening ? <MicOff className="w-6 h-6 text-destructive-foreground" /> : <Mic className="w-6 h-6 text-saffron-foreground" />}
+          {isListening ? (
+            <MicOff className="w-6 h-6 text-destructive-foreground" />
+          ) : (
+            <Mic className="w-6 h-6 text-saffron-foreground" />
+          )}
         </motion.button>
         <div className="flex-1 flex bg-muted rounded-2xl">
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            onKeyDown={(e) => e.key === "Enter" && !isLoading && handleSend()}
             placeholder={t("typeOrSpeak")}
             className="flex-1 bg-transparent px-4 py-3 text-sm outline-none"
           />
-          <Button size="sm" onClick={handleSend} className="m-1 rounded-xl bg-primary" disabled={!input.trim()}>
+          <Button
+            size="sm"
+            onClick={() => handleSend()}
+            className="m-1 rounded-xl bg-primary"
+            disabled={!input.trim() || isLoading}
+          >
             <Send className="w-4 h-4" />
           </Button>
         </div>
