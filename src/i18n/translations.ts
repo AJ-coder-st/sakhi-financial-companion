@@ -30,6 +30,7 @@ export const translations = {
     heroChatIraiviReply:
       "Of course! I found 3 schemes for you. First is the Mahila Samman Savings Certificate — it gives 7.5% interest. ✨",
     startJourney: "Start Your Journey",
+    launchIraivi: "Launch IRAIVI",
     seeDemo: "See Demo",
     dpdpCompliant: "DPDP Compliant",
     madeForBharat: "Made for Bharat",
@@ -102,7 +103,6 @@ export const translations = {
     investDesc: "Impact-driven funding for scale",
     buildWithUs: "Build With Us",
     buildDesc: "Open-source contributors welcome",
-    launchIraivi: "Launch IRAIVI",
 
     // Footer
     footerDesc: "Smart AI for Kisan & Household Inclusion. Empowering rural women through voice-first financial technology.",
