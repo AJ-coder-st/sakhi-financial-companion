@@ -128,15 +128,59 @@ const DashboardAssistant = () => {
     try {
       setIsLoading(true);
 
+      // Enhanced audio validation
+      if (!blob || blob.size === 0) {
+        const msg =
+          "आवाज़ रिकॉर्ड नहीं हो पाई। कृपया दोबारा बोलने की कोशिश करें।\n\nCould not capture your voice. Please try speaking again.";
+        const assistantMsg: Message = { role: "assistant", content: msg };
+        setMessages((prev) => [...prev, assistantMsg]);
+        speak(msg);
+        return;
+      }
+
+      // Check minimum audio duration (at least 0.5 seconds)
+      if (blob.size < 1000) {
+        const msg =
+          "रिकॉर्डिंग बहुत छोटी है। कृपया कम से कम 1 सेकंड तक बोलें।\n\nRecording is too short. Please speak for at least 1 second.";
+        const assistantMsg: Message = { role: "assistant", content: msg };
+        setMessages((prev) => [...prev, assistantMsg]);
+        speak(msg);
+        return;
+      }
+
+      // Check maximum audio size (25MB limit for AssemblyAI)
+      if (blob.size > 25 * 1024 * 1024) {
+        const msg =
+          "रिकॉर्डिंग बहुत लंबी है। कृपया 30 सेकंड से कम बोलें।\n\nRecording is too long. Please speak for less than 30 seconds.";
+        const assistantMsg: Message = { role: "assistant", content: msg };
+        setMessages((prev) => [...prev, assistantMsg]);
+        speak(msg);
+        return;
+      }
+
+      console.log(`Processing audio blob: ${blob.size} bytes, type: ${blob.type}`);
+
+      // Convert to base64 with enhanced error handling
       const base64 = await new Promise<string>((resolve, reject) => {
         const reader = new FileReader();
         reader.onloadend = () => {
           const result = reader.result as string;
+          if (!result || !result.includes(",")) {
+            reject(new Error("Invalid audio data format"));
+            return;
+          }
           const [, b64] = result.split(",");
-          resolve(b64 || "");
+          if (!b64) {
+            reject(new Error("Empty base64 data"));
+            return;
+          }
+          resolve(b64);
         };
-        reader.onerror = reject;
+        reader.onerror = () => reject(new Error("Failed to read audio file"));
         reader.readAsDataURL(blob);
+      }).catch((error) => {
+        console.error("Audio conversion error:", error);
+        throw error;
       });
 
       if (!base64) {
@@ -148,6 +192,7 @@ const DashboardAssistant = () => {
         return;
       }
 
+      // Send to backend with improved error handling
       const res = await fetch(`${API_BASE}/api/stt`, {
         method: "POST",
         headers: {
@@ -159,28 +204,73 @@ const DashboardAssistant = () => {
         }),
       });
 
-      const data = await res.json().catch(() => ({}));
-
-      if (!res.ok || !(data as any).text) {
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({}));
+        const errorMsg = errorData.error || "Speech-to-text service error";
+        console.error("STT API error:", res.status, errorMsg);
+        
         const msg =
-          (data as any)?.error ||
-          "आपकी आवाज़ समझने में दिक्कत हुई। कृपया साफ़ बोलकर दोबारा कोशिश करें।\n\nThere was a problem understanding your voice. Please speak clearly and try again.";
+          `आपकी आवाज़ समझने में दिक्कत हुई। ${errorMsg}\n\nThere was a problem understanding your voice. ${errorMsg}`;
         const assistantMsg: Message = { role: "assistant", content: msg };
         setMessages((prev) => [...prev, assistantMsg]);
         speak(msg);
         return;
       }
 
-      const transcript = (data as any).text as string;
+      const data = await res.json().catch(() => ({}));
+
+      if (!data.success || !data.text) {
+        const errorMsg = data.error || "Could not transcribe audio";
+        console.error("STT transcription failed:", errorMsg);
+        
+        const msg =
+          `आपकी आवाज़ समझने में दिक्कत हुई। ${errorMsg}\n\nThere was a problem understanding your voice. ${errorMsg}`;
+        const assistantMsg: Message = { role: "assistant", content: msg };
+        setMessages((prev) => [...prev, assistantMsg]);
+        speak(msg);
+        return;
+      }
+
+      const transcript = data.text as string;
+      
+      // Validate transcript quality
+      if (!transcript.trim()) {
+        const msg =
+          "कोई आवाज़ नहीं पहचानी गई। कृपया साफ़ बोलकर दोबारा कोशिश करें।\n\nNo speech detected. Please speak clearly and try again.";
+        const assistantMsg: Message = { role: "assistant", content: msg };
+        setMessages((prev) => [...prev, assistantMsg]);
+        speak(msg);
+        return;
+      }
+
+      // Log transcription details for debugging
+      console.log("Transcription successful:", {
+        text: transcript,
+        confidence: data.confidence,
+        words: data.words,
+        duration: blob.size
+      });
+
       setInput(transcript);
       await handleSend(transcript);
     } catch (error) {
-      console.error("STT failed", error);
-      const msg =
-        "वॉयस सर्विस से कनेक्शन नहीं हो पाया। कृपया अपना इंटरनेट चेक करें या टाइप करके सवाल पूछें।\n\nCould not connect to the voice service. Please check your internet or type your question.";
-      const assistantMsg: Message = { role: "assistant", content: msg };
+      console.error("STT failed:", error);
+      
+      let errorMsg = "वॉयस सर्विस से कनेक्शन नहीं हो पाया। कृपया अपना इंटरनेट चेक करें या टाइप करके सवाल पूछें।\n\nCould not connect to the voice service. Please check your internet or type your question.";
+      
+      if (error instanceof Error) {
+        if (error.message.includes("NotAllowedError")) {
+          errorMsg = "माइक्रोफ़ोन की अनुमति नहीं दी गई। कृपया ब्राउज़र सेटिंग्स में माइक्रोफ़ोन की अनुमति दें।\n\nMicrophone permission denied. Please allow microphone access in your browser settings.";
+        } else if (error.message.includes("NotFoundError")) {
+          errorMsg = "कोई माइक्रोफ़ोन नहीं मिला। कृपया माइक्रोफ़ोन कनेक्ट करें।\n\nNo microphone found. Please connect a microphone.";
+        } else if (error.message.includes("NotReadableError")) {
+          errorMsg = "माइक्रोफ़ोन उपयोग में है। कृपया कुछ देर बाद फिर से कोशिश करें।\n\nMicrophone is in use. Please try again in a moment.";
+        }
+      }
+      
+      const assistantMsg: Message = { role: "assistant", content: errorMsg };
       setMessages((prev) => [...prev, assistantMsg]);
-      speak(msg);
+      speak(errorMsg);
     } finally {
       setIsLoading(false);
     }
@@ -199,6 +289,7 @@ const DashboardAssistant = () => {
       return;
     }
 
+    // Enhanced microphone capability check
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       const msg =
         "आपके डिवाइस पर माइक्रोफोन एक्सेस उपलब्ध नहीं है। कृपया टाइप करके सवाल पूछें।\n\nMicrophone access is not available on your device. Please type your question instead.";
@@ -208,36 +299,122 @@ const DashboardAssistant = () => {
       return;
     }
 
+    // Enhanced audio constraints for better quality
+    const audioConstraints = {
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true,
+        sampleRate: 16000, // 16kHz is optimal for speech recognition
+        channelCount: 1, // Mono is sufficient for speech
+      },
+    };
+
     navigator.mediaDevices
-      .getUserMedia({ audio: true })
+      .getUserMedia(audioConstraints)
       .then((stream) => {
-        const recorder = new MediaRecorder(stream);
+        console.log("Microphone access granted, stream active:", stream.active);
+        
+        // Check if we got audio tracks
+        const audioTracks = stream.getAudioTracks();
+        if (audioTracks.length === 0) {
+          throw new Error("No audio tracks found in media stream");
+        }
+
+        // Use WebM format which is widely supported
+        const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') 
+          ? 'audio/webm;codecs=opus' 
+          : MediaRecorder.isTypeSupported('audio/webm')
+          ? 'audio/webm'
+          : 'audio/ogg';
+
+        console.log("Using MIME type:", mimeType);
+
+        const recorder = new MediaRecorder(stream, { mimeType });
         audioChunksRef.current = [];
 
+        // Enhanced data handling
         recorder.ondataavailable = (event) => {
           if (event.data && event.data.size > 0) {
             audioChunksRef.current.push(event.data);
+            console.log(`Audio chunk received: ${event.data.size} bytes`);
           }
         };
 
+        recorder.onerror = (event) => {
+          console.error("MediaRecorder error:", event);
+          const msg =
+            "रिकॉर्डिंग में त्रुटि हुई। कृपया फिर से कोशिश करें।\n\nRecording error occurred. Please try again.";
+          const assistantMsg: Message = { role: "assistant", content: msg };
+          setMessages((prev) => [...prev, assistantMsg]);
+          speak(msg);
+          setIsListening(false);
+        };
+
         recorder.onstop = () => {
-          const blob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+          console.log("MediaRecorder stopped, processing audio...");
+          
+          // Combine all audio chunks
+          if (audioChunksRef.current.length === 0) {
+            const msg =
+              "आवाज़ रिकॉर्ड नहीं हो पाई। कृपया दोबारा बोलने की कोशिश करें।\n\nCould not capture your voice. Please try speaking again.";
+            const assistantMsg: Message = { role: "assistant", content: msg };
+            setMessages((prev) => [...prev, assistantMsg]);
+            speak(msg);
+            setIsListening(false);
+            return;
+          }
+
+          const blob = new Blob(audioChunksRef.current, { type: mimeType });
           audioChunksRef.current = [];
-          stream.getTracks().forEach((track) => track.stop());
+          
+          // Clean up stream
+          stream.getTracks().forEach((track) => {
+            track.stop();
+            console.log("Audio track stopped:", track.kind, track.label);
+          });
+
+          console.log(`Final audio blob: ${blob.size} bytes, type: ${blob.type}`);
           void transcribeAndSend(blob);
         };
 
         mediaRecorderRef.current = recorder;
-        recorder.start();
+        
+        // Start recording with time limit (30 seconds max)
+        recorder.start(1000); // Collect data every second
         setIsListening(true);
+        
+        // Auto-stop after 30 seconds to prevent very long recordings
+        setTimeout(() => {
+          if (recorder.state === 'recording') {
+            console.log("Auto-stopping recording after 30 seconds");
+            recorder.stop();
+            setIsListening(false);
+          }
+        }, 30000);
+
       })
       .catch((err) => {
-        console.error("getUserMedia error", err);
-        const msg =
-          "माइक्रोफोन की अनुमति नहीं मिली। कृपया ब्राउज़र सेटिंग्स में अनुमति दें या टाइप करके सवाल पूछें।\n\nMicrophone permission was denied. Please allow it in your browser settings or type your question.";
-        const assistantMsg: Message = { role: "assistant", content: msg };
+        console.error("Microphone access error:", err);
+        setIsListening(false);
+        
+        let errorMsg = "माइक्रोफ़ोन एक्सेस में त्रुटि। कृपया टाइप करके सवाल पूछें।\n\nMicrophone access error. Please type your question instead.";
+        
+        if (err instanceof Error) {
+          if (err.name === 'NotAllowedError' || err.message.includes('Permission denied')) {
+            errorMsg = "माइक्रोफ़ोन की अनुमति नहीं दी गई। कृपया ब्राउज़र सेटिंग्स में माइक्रोफ़ोन की अनुमति दें।\n\nMicrophone permission denied. Please allow microphone access in your browser settings.";
+          } else if (err.name === 'NotFoundError' || err.message.includes('No device')) {
+            errorMsg = "कोई माइक्रोफ़ोन नहीं मिला। कृपया माइक्रोफ़ोन कनेक्ट करें।\n\nNo microphone found. Please connect a microphone.";
+          } else if (err.name === 'NotReadableError' || err.message.includes('in use')) {
+            errorMsg = "माइक्रोफ़ोन उपयोग में है। कृपया कुछ देर बाद फिर से कोशिश करें।\n\nMicrophone is in use. Please try again in a moment.";
+          } else if (err.name === 'NotSupportedError') {
+            errorMsg = "आपका ब्राउज़र माइक्रोफ़ोन एक्सेस का समर्थन नहीं करता। कृपया आधुनिक ब्राउज़र का उपयोग करें।\n\nYour browser doesn't support microphone access. Please use a modern browser.";
+          }
+        }
+        
+        const assistantMsg: Message = { role: "assistant", content: errorMsg };
         setMessages((prev) => [...prev, assistantMsg]);
-        speak(msg);
+        speak(errorMsg);
       });
   };
 
