@@ -211,7 +211,7 @@ const HomeTab = ({ onNavigate }: { onNavigate: (tab: TabKey) => void }) => {
             { label: t("findSchemes"), icon: Search, tab: "schemes" as TabKey },
             { label: t("addSavings"), icon: PiggyBank, tab: "savings" as TabKey },
             { label: t("continueLearning"), icon: BookOpen, tab: "learn" as TabKey },
-            { label: "Learn Business", icon: Briefcase, tab: "entrepreneurship" as TabKey },
+            { label: t("learnBusiness"), icon: Briefcase, tab: "entrepreneurship" as TabKey },
             { label: t("mySHGGroup"), icon: Users, tab: "community" as TabKey },
           ].map((a, i) => (
             <button key={i} onClick={() => onNavigate(a.tab)} className="bg-card rounded-xl p-4 border border-border hover:shadow-sakhi transition-shadow text-left">

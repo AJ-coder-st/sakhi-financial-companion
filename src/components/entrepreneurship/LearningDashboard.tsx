@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BookOpen, Trophy, Users, Target, Zap, Lock, CheckCircle } from 'lucide-react';
+import { useLanguage } from '@/i18n/LanguageContext';
 import QuestCardSimple from './QuestCardSimple';
 // import { CreditProgress } from './CreditProgress';
 // import { DailyChallenge } from './DailyChallenge';
@@ -18,51 +19,58 @@ interface Quest {
 
 interface UserProfile {
   credits: number;
-  level: string;
+  level: number;
   badges: string[];
-  nextMilestone: number;
+  nextLevelCredits: number;
+  completedQuests: number;
+  totalQuests: number;
+  nextMilestone: string;
   nextMilestoneTitle: string;
 }
 
-const LearningDashboard: React.FC = () => {
+const LearningDashboard = () => {
+  const { t } = useLanguage();
   const [userProfile, setUserProfile] = useState<UserProfile>({
     credits: 120,
-    level: 'Smart Saver',
-    badges: ['Beginner Entrepreneur', 'Quick Learner'],
-    nextMilestone: 150,
-    nextMilestoneTitle: 'Mentor Access'
+    level: 2,
+    badges: ["Beginner", "Smart Saver"],
+    nextLevelCredits: 150,
+    completedQuests: 3,
+    totalQuests: 8,
+    nextMilestone: "Market Expert",
+    nextMilestoneTitle: "Market Expert",
   });
 
   const [quests, setQuests] = useState<Quest[]>([
     {
       id: 'quest1',
-      title: 'छोटे शुरू करें / Start a Small Shop',
+      title: t('language') === 'hi' ? 'छोटे शुरू करें' : 'Start a Small Shop',
       description: 'Learn how to start your own small business with minimal investment',
       icon: '🛍️',
       difficulty: 'beginner',
       credits: 30,
-      completed: true,
-      progress: 100
-    },
-    {
-      id: 'quest2', 
-      title: 'मुनाफा बढ़ाना और निवेश करना / Save and Reinvest',
-      description: 'Understand profit margins and how to grow your business',
-      icon: '💰',
-      difficulty: 'beginner',
-      credits: 40,
       completed: false,
-      progress: 60
+      progress: 0,
     },
     {
-      id: 'quest3',
-      title: 'उत्पाद मूल्यांकन / Product Pricing',
-      description: 'Learn to price your products competitively while maintaining profit',
-      icon: '🏷️',
+      id: 'quest2',
+      title: t('language') === 'hi' ? 'बचत करें और फिर से निवेश करें' : 'Save and Reinvest',
+      description: 'Learn the power of saving profits and reinvesting in your business',
+      icon: '💰',
       difficulty: 'intermediate',
       credits: 50,
       completed: false,
-      progress: 0
+      progress: 0,
+    },
+    {
+      id: 'quest3',
+      title: t('language') === 'hi' ? 'ग्राहकों को जोड़ें' : 'Connect with Customers',
+      description: 'Master the art of customer service and building relationships',
+      icon: '🤝',
+      difficulty: 'beginner',
+      credits: 25,
+      completed: false,
+      progress: 0,
     },
     {
       id: 'quest4',
@@ -119,14 +127,14 @@ const LearningDashboard: React.FC = () => {
       <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-xl font-semibold text-gray-800">मेरा प्रोफाइल / My Profile</h2>
+            <h2 className="text-xl font-semibold text-gray-800">{t('myProfile')}</h2>
             <div className="flex items-center gap-2 mt-1">
               <span className="text-2xl font-bold text-purple-600">{userProfile.credits}</span>
-              <span className="text-gray-600">क्रेडिट्स</span>
+              <span className="text-gray-600">{t('credits')}</span>
             </div>
           </div>
           <div className="text-right">
-            <div className="text-sm text-gray-600 mb-1">अगला स्तर / Level</div>
+            <div className="text-sm text-gray-600 mb-1">{t('nextLevel')}</div>
             <div className="text-lg font-semibold text-purple-700">{userProfile.level}</div>
           </div>
         </div>
@@ -134,23 +142,23 @@ const LearningDashboard: React.FC = () => {
         {/* Progress to Next Milestone */}
         <div className="bg-purple-50 rounded-lg p-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-purple-700">अगला लक्ष्य / Next Goal</span>
-            <span className="text-sm text-purple-600">{userProfile.nextMilestone} क्रेडिट्स</span>
+            <span className="text-sm font-medium text-purple-700">{t('nextLevel')}</span>
+            <span className="text-sm text-purple-600">{userProfile.nextLevelCredits} {t('credits')}</span>
           </div>
           <div className="w-full bg-purple-200 rounded-full h-3 mb-2">
             <div 
               className="bg-purple-600 h-3 rounded-full transition-all duration-500"
-              style={{ width: `${(userProfile.credits / userProfile.nextMilestone) * 100}%` }}
+              style={{ width: `${(userProfile.credits / userProfile.nextLevelCredits) * 100}%` }}
             />
           </div>
           <div className="text-center text-sm text-purple-700 font-medium">
-            {userProfile.nextMilestoneTitle} अनलॉक करें / Unlock {userProfile.nextMilestoneTitle}
+            {t('unlockAt')} {userProfile.nextMilestoneTitle}
           </div>
         </div>
 
         {/* Badges */}
         <div className="mt-4">
-          <h3 className="text-sm font-semibold text-gray-700 mb-2">उपलब्धियाँ / Badges</h3>
+          <h3 className="text-sm font-semibold text-gray-700 mb-2">{t('badges')}</h3>
           <div className="flex flex-wrap gap-2">
             {userProfile.badges.map((badge, index) => (
               <div key={index} className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-semibold">
@@ -171,7 +179,7 @@ const LearningDashboard: React.FC = () => {
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
           <BookOpen className="w-6 h-6 text-purple-600" />
-          सीखने के क्वेस्ट / Learning Quests
+          {t('learningQuests')}
         </h2>
         
         <div className="grid md:grid-cols-2 gap-4">
