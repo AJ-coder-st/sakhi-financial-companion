@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BookOpen, Trophy, Users, Target, Zap, Lock, CheckCircle } from 'lucide-react';
-import { QuestCardSimple } from './QuestCardSimple';
+import QuestCardSimple from './QuestCardSimple';
 // import { CreditProgress } from './CreditProgress';
 // import { DailyChallenge } from './DailyChallenge';
 // import { MentorConnect } from './MentorConnect';
