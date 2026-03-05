@@ -93,26 +93,55 @@ export const VoiceMentor: React.FC = () => {
 
       recognition.onerror = () => {
         setIsListening(false);
-        // Fallback to manual input
+        // Graceful fallback to manual input
       };
 
-      recognition.start();
+      try {
+        recognition.start();
+      } catch (error) {
+        console.error('Speech recognition failed:', error);
+        setIsListening(false);
+      }
     } else {
-      // Fallback for browsers without speech recognition
-      alert('Voice recognition is not supported in your browser. Please use the input field below.');
+      // Graceful fallback for browsers without speech recognition
+      console.log('Voice recognition not supported, using manual input');
     }
   };
 
   const handleManualInput = () => {
+    // Extract investment amount from transcript
     const amountMatch = transcript.match(/(\d+)/);
     if (amountMatch) {
       const amount = parseInt(amountMatch[1]);
-      setInvestment(amount);
-      setIsProcessing(true);
-      setTimeout(() => {
-        setSuggestion(generateSuggestion(amount));
-        setIsProcessing(false);
-      }, 1500);
+      if (amount > 0) {
+        setInvestment(amount);
+        setIsProcessing(true);
+        setTimeout(() => {
+          setSuggestion(generateSuggestion(amount));
+          setIsProcessing(false);
+        }, 1500);
+      }
+    } else {
+      // Try to extract from common phrases
+      const phrases = [
+        { pattern: /two thousand/i, value: 2000 },
+        { pattern: /three thousand/i, value: 3000 },
+        { pattern: /five thousand/i, value: 5000 },
+        { pattern: /ten thousand/i, value: 10000 },
+        { pattern: /fifteen thousand/i, value: 15000 },
+      ];
+      
+      for (const phrase of phrases) {
+        if (phrase.pattern.test(transcript)) {
+          setInvestment(phrase.value);
+          setIsProcessing(true);
+          setTimeout(() => {
+            setSuggestion(generateSuggestion(phrase.value));
+            setIsProcessing(false);
+          }, 1500);
+          break;
+        }
+      }
     }
   };
 
@@ -241,14 +270,25 @@ export const VoiceMentor: React.FC = () => {
             <p className="text-xl font-bold text-amber-100">{suggestion.scheme}</p>
           </div>
 
-          <div className="mt-4 flex items-center justify-between">
-            <div className="text-amber-100">
-              <span className="text-sm">Return on Investment: </span>
-              <span className="text-xl font-bold">
-                {Math.round(((suggestion.monthlyProfit - investment/12) / investment) * 100)}%
-              </span>
+          <div className="mt-4 bg-white/20 rounded-lg p-3">
+            <p className="text-amber-100 font-medium mb-2">
+              💡 Great! With ₹{suggestion.investment.toLocaleString()} you can start a {suggestion.business} business.
+            </p>
+            <div className="flex items-center justify-between">
+              <div className="text-amber-100">
+                <span className="text-sm">Expected Annual Return: </span>
+                <span className="text-xl font-bold">
+                  ₹{(suggestion.monthlyProfit * 12).toLocaleString()}
+                </span>
+              </div>
+              <div className="text-amber-100">
+                <span className="text-sm">Return on Investment: </span>
+                <span className="text-xl font-bold">
+                  {Math.round(((suggestion.monthlyProfit * 12 - suggestion.investment) / suggestion.investment) * 100)}%
+                </span>
+              </div>
             </div>
-            <button className="bg-white text-amber-600 px-6 py-2 rounded-lg font-semibold hover:bg-amber-50 transition-colors">
+            <button className="bg-white text-amber-600 px-6 py-2 rounded-lg font-semibold hover:bg-amber-50 transition-colors mt-3">
               Get Started
             </button>
           </div>
