@@ -29,6 +29,7 @@ const LiveTextTranslateScanner: React.FC = () => {
   const [ocrProgress, setOcrProgress] = useState<string>('');
   const [stableCount, setStableCount] = useState(0);
   const [showScanOverlay, setShowScanOverlay] = useState(true);
+  const [lastLogTime, setLastLogTime] = useState(Date.now());
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -149,15 +150,22 @@ const LiveTextTranslateScanner: React.FC = () => {
         0.299 * data[i] +
         0.587 * data[i + 1] +
         0.114 * data[i + 2];
-
       const value = gray > 140 ? 255 : 0;
-
       data[i] = value;
       data[i + 1] = value;
       data[i + 2] = value;
     }
 
+    // Apply additional contrast enhancement
     ctx.putImageData(imageData, 0, 0);
+    
+    // Increase contrast for better text detection
+    const contrast = 1.2;
+    ctx.filter = `contrast(${contrast})`;
+    ctx.drawImage(canvas, 0, 0);
+    
+    // Reset filter
+    ctx.filter = 'none';
   }, []);
 
   // OCR processing
@@ -174,15 +182,25 @@ const LiveTextTranslateScanner: React.FC = () => {
 
       if (!ctx) return;
 
-      // Set canvas size for better OCR resolution
-      canvas.width = 1280;
-      canvas.height = 720;
+      // Auto-scale small images for better OCR
+      const videoWidth = video.videoWidth;
+      const videoHeight = video.videoHeight;
+      const minDimension = Math.min(videoWidth, videoHeight);
+      
+      // Scale up if image is too small
+      if (minDimension < 400) {
+        canvas.width = videoWidth * 2;
+        canvas.height = videoHeight * 2;
+      } else {
+        canvas.width = videoWidth;
+        canvas.height = videoHeight;
+      }
 
       // Draw center region of video frame for better text focus
-      const sourceWidth = video.videoWidth / 2;
-      const sourceHeight = video.videoHeight / 2;
-      const sourceX = video.videoWidth / 4;
-      const sourceY = video.videoHeight / 4;
+      const sourceWidth = canvas.width / 2;
+      const sourceHeight = canvas.height / 2;
+      const sourceX = canvas.width / 4;
+      const sourceY = canvas.height / 4;
       
       ctx.drawImage(
         video,
@@ -211,19 +229,25 @@ const LiveTextTranslateScanner: React.FC = () => {
           },
           tessedit_pageseg_mode: 6,
           tessedit_char_whitelist:
-            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789₹.,:-'
+            'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789₹.,:-',
+          // Improved settings for better accuracy
+          tessedit_ocr_engine_mode: 1,
+          tessedit_noise_removal: 1,
+          tessedit_auto_rotate: true,
+          tessedit_min_confidence: 25
         }
       );
 
       const detectedText = result.data.text.trim();
       const confidence = result.data.confidence || 0;
 
-      // Ignore low confidence results
-      if (confidence < 60) {
-        console.log('Low confidence frame ignored:', confidence);
-        setIsProcessing(false);
-        setOcrProgress('');
-        return;
+      // Ignore low confidence results - lower threshold but still process
+      if (confidence < 30) {
+        const now = Date.now();
+        if (now - lastLogTime > 1000) { // Throttle logs to once per second
+          console.warn("Low confidence frame, still processing:", confidence);
+          setLastLogTime(now);
+        }
       }
 
       // Stabilize text detection - only update when same text appears multiple times
@@ -234,14 +258,14 @@ const LiveTextTranslateScanner: React.FC = () => {
         lastDetectionRef.current = detectedText;
       }
 
-      // Only update UI when text is stable across multiple frames
-      if (stableCount < 2) {
-        setIsProcessing(false);
-        setOcrProgress('');
-        return;
-      }
+      // Update detection result for all frames (not just stable ones)
+      setDetection({
+        detectedText,
+        translatedText: '',
+        timestamp: Date.now()
+      });
 
-      // Translate the detected text
+      // Translate detected text
       let translatedText = detectedText;
       try {
         translatedText = await translateText(detectedText, targetLanguage);
@@ -249,16 +273,14 @@ const LiveTextTranslateScanner: React.FC = () => {
         console.warn('Translation failed, using original text:', err);
       }
 
-      // Update detection result
       setDetection({
         detectedText,
         translatedText,
         timestamp: Date.now()
       });
 
-      setOcrProgress('');
       setIsProcessing(false);
-
+      setOcrProgress('');
     } catch (err) {
       console.error('OCR error:', err);
       setError('OCR processing failed. Please try again.');
@@ -291,10 +313,10 @@ const LiveTextTranslateScanner: React.FC = () => {
 
       setIsScanning(true);
 
-      // Start OCR interval (every 2000ms for better accuracy)
+      // Start OCR interval (throttled for better performance)
       ocrIntervalRef.current = setInterval(() => {
         processFrame();
-      }, 2000);
+      }, 500); // Process every 500ms for better accuracy
 
     } catch (err: any) {
       console.error('Camera error:', err);
