@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import EntrepreneurshipLearning from "./pages/EntrepreneurshipLearning";
 import DocumentScan from "./pages/DocumentScan";
+import { ImpactDashboard } from "./pages/ImpactDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/entrepreneurship" element={<EntrepreneurshipLearning />} />
             <Route path="/scan-document" element={<DocumentScan />} />
+            <Route path="/impact" element={<ImpactDashboard />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
