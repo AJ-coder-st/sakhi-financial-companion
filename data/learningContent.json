@@ -1,0 +1,308 @@
+[
+  {
+    "level": 1,
+    "title": "What is Money?",
+    "titleHi": "पैसा क्या है?",
+    "lessons": [
+      {
+        "id": 1,
+        "title": "Introduction to Money",
+        "titleHi": "पैसे का परिचय",
+        "definition": "Money is a system of value used to buy and sell things",
+        "definitionHi": "पैसा एक मूल्य प्रणाली है जिसका उपयोग चीजें खरीदने और बेचने के लिए किया जाता है",
+        "explanation": "Money makes trade easier. Instead of trading chickens for rice, we use money as a common medium. It has value because people agree it does.",
+        "explanationHi": "पैसा व्यापार को आसान बनाता है। मुर्गियों के लिए चावल का व्यापार करने के बजाय, हम एक सामान्य माध्यम के रूप में पैसे का उपयोग करते हैं।",
+        "audioUrl": "https://example.com/audio/money-intro.mp3",
+        "duration": "2:30"
+      },
+      {
+        "id": 2,
+        "title": "Types of Money",
+        "titleHi": "पैसे के प्रकार",
+        "definition": "Money exists in different forms: coins, notes, and digital",
+        "definitionHi": "पैसा विभिन्न रूपों में मौजूद है: सिक्के, नोट और डिजिटल",
+        "explanation": "Coins and notes are physical money you can touch. Digital money is on your phone or in a bank account. All serve the same purpose.",
+        "explanationHi": "सिक्के और नोट भौतिक पैसे हैं जिन्हें आप छू सकते हैं। डिजिटल पैसा आपके फोन पर या बैंक खाते में है।",
+        "audioUrl": "https://example.com/audio/money-types.mp3",
+        "duration": "3:15"
+      },
+      {
+        "id": 3,
+        "title": "Why You Need Money",
+        "titleHi": "आपको पैसे की क्यों जरूरत है",
+        "definition": "Money helps you meet basic needs and save for the future",
+        "definitionHi": "पैसा आपको बुनियादी जरूरतों को पूरा करने और भविष्य के लिए बचत करने में मदद करता है",
+        "explanation": "Money buys food, shelter, education, and healthcare. It also lets you save for emergencies and dreams. Having money gives you security and choices.",
+        "explanationHi": "पैसा भोजन, आश्रय, शिक्षा और स्वास्थ्यसेवा खरीदता है। यह आपको आपातकालीन और सपनों के लिए बचत करने देता है।",
+        "audioUrl": "https://example.com/audio/money-need.mp3",
+        "duration": "2:45"
+      },
+      {
+        "id": 4,
+        "title": "Money & Values",
+        "titleHi": "पैसा और मूल्य",
+        "definition": "Money represents agreed-upon value in society",
+        "definitionHi": "पैसा समाज में सहमत मूल्य का प्रतिनिधित्व करता है",
+        "explanation": "A ₹100 note is worth ₹100 because everyone agrees it is. Its value comes from trust in government. When trust breaks, money loses value.",
+        "explanationHi": "₹100 का नोट ₹100 के लायक है क्योंकि सभी सहमत हैं। इसका मूल्य सरकार में विश्वास से आता है।",
+        "audioUrl": "https://example.com/audio/money-values.mp3",
+        "duration": "3:00"
+      }
+    ]
+  },
+  {
+    "level": 2,
+    "title": "Banking Basics",
+    "titleHi": "बैंकिंग की बुनियाद",
+    "lessons": [
+      {
+        "id": 1,
+        "title": "What is a Bank?",
+        "titleHi": "बैंक क्या है?",
+        "definition": "A bank is a place where you safely store money and borrow funds",
+        "definitionHi": "एक बैंक एक ऐसी जगह है जहां आप सुरक्षित रूप से पैसा रखते हैं और पैसा उधार लेते हैं",
+        "explanation": "Banks keep your money safe in vaults. They also lend money to people who need it and pay you interest for using your deposits.",
+        "explanationHi": "बैंक आपके पैसे को तिजोरियों में सुरक्षित रखते हैं। वे उन लोगों को पैसा उधार देते हैं जिन्हें इसकी जरूरत है।",
+        "audioUrl": "https://example.com/audio/bank-what.mp3",
+        "duration": "3:30"
+      },
+      {
+        "id": 2,
+        "title": "Opening a Bank Account",
+        "titleHi": "बैंक खाता खोलना",
+        "definition": "A bank account is a personal record of your money with the bank",
+        "definitionHi": "एक बैंक खाता बैंक के साथ आपके पैसे का व्यक्तिगत रिकॉर्ड है",
+        "explanation": "To open an account, you need to visit a bank, provide ID proof and address. Then you get an account number and passbook. Your money is now tracked and protected.",
+        "explanationHi": "खाता खोलने के लिए, आपको बैंक जाना होगा, आईडी प्रमाण और पता देना होगा।",
+        "audioUrl": "https://example.com/audio/bank-account.mp3",
+        "duration": "4:00"
+      },
+      {
+        "id": 3,
+        "title": "Deposits & Withdrawals",
+        "titleHi": "जमा और निकासी",
+        "definition": "Deposit puts money in, withdrawal takes money out of your account",
+        "definitionHi": "जमा पैसा डालता है, निकासी आपके खाते से पैसा निकालता है",
+        "explanation": "When you put money in the bank, it's a deposit. When you take money out, it's a withdrawal. The bank keeps records of all transactions in your passbook.",
+        "explanationHi": "जब आप बैंक में पैसा डालते हैं, तो वह जमा होता है। जब आप पैसा निकालते हैं, तो वह निकासी होती है।",
+        "audioUrl": "https://example.com/audio/bank-deposit.mp3",
+        "duration": "3:45"
+      },
+      {
+        "id": 4,
+        "title": "Interest on Savings",
+        "titleHi": "बचत पर ब्याज",
+        "definition": "Interest is extra money the bank gives you for keeping your money with them",
+        "definitionHi": "ब्याज अतिरिक्त पैसा है जो बैंक आपको अपने पास पैसा रखने के लिए देता है",
+        "explanation": "If you save ₹1000 at 4% interest per year, the bank adds ₹40 after a year. This is their reward for letting them use your money safely.",
+        "explanationHi": "अगर आप साल में 4% ब्याज पर ₹1000 बचाते हैं, तो बैंक एक साल के बाद ₹40 जोड़ता है।",
+        "audioUrl": "https://example.com/audio/bank-interest.mp3",
+        "duration": "3:20"
+      }
+    ]
+  },
+  {
+    "level": 3,
+    "title": "Saving & Budgeting",
+    "titleHi": "बचत और बजट",
+    "lessons": [
+      {
+        "id": 1,
+        "title": "What is Saving?",
+        "titleHi": "बचत क्या है?",
+        "definition": "Saving is keeping money aside instead of spending it all",
+        "definitionHi": "बचत सभी पैसे खर्च करने के बजाय पैसे को एक तरफ रखना है",
+        "explanation": "If you earn ₹100 and spend ₹70, you save ₹30. Regular saving creates a safety net for emergencies and lets you buy bigger things later.",
+        "explanationHi": "अगर आप ₹100 कमाते हैं और ₹70 खर्च करते हैं, तो आप ₹30 बचाते हैं।",
+        "audioUrl": "https://example.com/audio/save-what.mp3",
+        "duration": "2:50"
+      },
+      {
+        "id": 2,
+        "title": "Creating a Budget",
+        "titleHi": "बजट बनाना",
+        "definition": "A budget is a plan of how you will spend and save your money",
+        "definitionHi": "एक बजट एक योजना है कि आप अपना पैसा कैसे खर्च और बचाएंगे",
+        "explanation": "Write down your income and all expenses (food, rent, children, medicine). Then decide how much to save. A budget helps you control your money instead of money controlling you.",
+        "explanationHi": "अपनी आय और सभी खर्च (भोजन, किराया, बच्चे, दवा) लिखें। फिर तय करें कि कितना बचाना है।",
+        "audioUrl": "https://example.com/audio/budget-create.mp3",
+        "duration": "3:40"
+      },
+      {
+        "id": 3,
+        "title": "Emergency Fund",
+        "titleHi": "आपातकालीन निधि",
+        "definition": "An emergency fund is money saved for unexpected problems",
+        "definitionHi": "एक आपातकालीन निधि अप्रत्याशित समस्याओं के लिए बचाया गया पैसा है",
+        "explanation": "Illnesses, accidents, or crop failures come without warning. Try to save 3-6 months of expenses in an emergency fund. This prevents you from borrowing at high interest.",
+        "explanationHi": "बीमारियां, दुर्घटनाएं, या फसल की विफलता बिना चेतावनी के आती है।",
+        "audioUrl": "https://example.com/audio/emergency-fund.mp3",
+        "duration": "3:15"
+      },
+      {
+        "id": 4,
+        "title": "Spending Goals",
+        "titleHi": "खर्च के लक्ष्य",
+        "definition": "Spending goals are targets for what you want to buy or achieve",
+        "definitionHi": "खर्च के लक्ष्य आप जो खरीदना या हासिल करना चाहते हैं उसके लिए लक्ष्य हैं",
+        "explanation": "Goals like 'buy a sewing machine' or 'repair the roof' give purpose to saving. Break big goals into monthly targets. Celebrate when you reach them!",
+        "explanationHi": "'सिलाई मशीन खरीदना' या 'छत की मरम्मत करना' जैसे लक्ष्य बचत को उद्देश्य देते हैं।",
+        "audioUrl": "https://example.com/audio/spending-goals.mp3",
+        "duration": "3:00"
+      }
+    ]
+  },
+  {
+    "level": 4,
+    "title": "Credit & Loans",
+    "titleHi": "उधार और ऋण",
+    "lessons": [
+      {
+        "id": 1,
+        "title": "Understanding Credit",
+        "titleHi": "उधार को समझना",
+        "definition": "Credit means borrowing money with a promise to pay it back",
+        "definitionHi": "क्रेडिट का मतलब पैसा उधार लेना और इसे वापस देने का वादा करना है",
+        "explanation": "When you use credit, you get money now but pay later. Lenders add interest as a cost for lending. Good credit history helps you borrow more in the future.",
+        "explanationHi": "जब आप क्रेडिट का उपयोग करते हैं, तो आप अभी पैसा पाते हैं लेकिन बाद में भुगतान करते हैं।",
+        "audioUrl": "https://example.com/audio/credit-understand.mp3",
+        "duration": "3:50"
+      },
+      {
+        "id": 2,
+        "title": "Types of Loans",
+        "titleHi": "ऋण के प्रकार",
+        "definition": "Different loans are designed for different purposes",
+        "definitionHi": "विभिन्न ऋण विभिन्न उद्देश्यों के लिए डिज़ाइन किए गए हैं",
+        "explanation": "Crop loans for farming, personal loans for emergencies, business loans to start a shop. Each has different interest rates and repayment periods. Choose based on your need.",
+        "explanationHi": "खेती के लिए फसल ऋण, आपातकालीन के लिए व्यक्तिगत ऋण, दुकान शुरू करने के लिए व्यावसायिक ऋण।",
+        "audioUrl": "https://example.com/audio/loan-types.mp3",
+        "duration": "4:00"
+      },
+      {
+        "id": 3,
+        "title": "Interest Rates",
+        "titleHi": "ब्याज दरें",
+        "definition": "Interest rate is the percentage cost of borrowing money",
+        "definitionHi": "ब्याज दर पैसा उधार लेने की प्रतिशत लागत है",
+        "explanation": "If you borrow ₹10,000 at 10% interest for 1 year, you pay back ₹11,000. Lower interest is better. Always ask the interest rate before borrowing.",
+        "explanationHi": "अगर आप 10% ब्याज पर 1 साल के लिए ₹10,000 उधार लेते हैं, तो आप ₹11,000 वापस करते हैं।",
+        "audioUrl": "https://example.com/audio/interest-rates.mp3",
+        "duration": "3:35"
+      },
+      {
+        "id": 4,
+        "title": "Repayment",
+        "titleHi": "चुकौती",
+        "definition": "Repayment is paying back the borrowed money, usually in installments",
+        "definitionHi": "चुकौती उधार लिए गए पैसे को वापस करना है, आमतौर पर किश्तों में",
+        "explanation": "Create a repayment schedule so you don't miss payments. Missing payments damages your credit and you may have to pay extra penalties. Always pay on time!",
+        "explanationHi": "एक चुकौती अनुसूची बनाएं ताकि आप भुगतान न भूलें।",
+        "audioUrl": "https://example.com/audio/repayment.mp3",
+        "duration": "3:20"
+      }
+    ]
+  },
+  {
+    "level": 5,
+    "title": "Insurance & Protection",
+    "titleHi": "बीमा और सुरक्षा",
+    "lessons": [
+      {
+        "id": 1,
+        "title": "What is Insurance?",
+        "titleHi": "बीमा क्या है?",
+        "definition": "Insurance is protection against financial loss from unexpected events",
+        "definitionHi": "बीमा अप्रत्याशित घटनाओं से वित्तीय नुकसान से सुरक्षा है",
+        "explanation": "You pay a small amount regularly (premium). If something bad happens, insurance pays you a large amount. It protects you and your family from financial shocks.",
+        "explanationHi": "आप नियमित रूप से एक छोटी राशि (प्रीमियम) का भुगतान करते हैं। अगर कुछ बुरा होता है, तो बीमा आपको बड़ी राशि देता है।",
+        "audioUrl": "https://example.com/audio/insurance-what.mp3",
+        "duration": "3:45"
+      },
+      {
+        "id": 2,
+        "title": "Health Insurance",
+        "titleHi": "स्वास्थ्य बीमा",
+        "definition": "Health insurance covers medical expenses when you or family members get sick",
+        "definitionHi": "स्वास्थ्य बीमा तब चिकित्सा खर्चों को कवर करता है जब आप या परिवार के सदस्य बीमार पड़ते हैं",
+        "explanation": "A hospital stay can cost ₹50,000 or more. With health insurance, the insurance company pays most of it. This protects your life savings from medical emergencies.",
+        "explanationHi": "एक अस्पताल में रहना ₹50,000 या अधिक खर्च कर सकता है।",
+        "audioUrl": "https://example.com/audio/health-insurance.mp3",
+        "duration": "3:50"
+      },
+      {
+        "id": 3,
+        "title": "Life Insurance",
+        "titleHi": "जीवन बीमा",
+        "definition": "Life insurance pays money to your family if you pass away",
+        "definitionHi": "जीवन बीमा यदि आप की मृत्यु हो जाती है तो आपके परिवार को पैसा देता है",
+        "explanation": "If you're the earning member and something happens to you, your family has no income. Life insurance ensures your children's education and family expenses are covered.",
+        "explanationHi": "अगर आप कमाने वाले सदस्य हैं और आपके साथ कुछ होता है, तो आपके परिवार के पास कोई आय नहीं है।",
+        "audioUrl": "https://example.com/audio/life-insurance.mp3",
+        "duration": "4:00"
+      },
+      {
+        "id": 4,
+        "title": "Crop Insurance",
+        "titleHi": "फसल बीमा",
+        "definition": "Crop insurance protects farmers when crops fail due to natural disasters",
+        "definitionHi": "फसल बीमा किसानों को प्राकृतिक आपदाओं के कारण फसल विफल होने पर सुरक्षा देता है",
+        "explanation": "Drought or floods can destroy your harvest. Crop insurance pays you if yields drop below a certain level. Schemes like PM Fasal Bima offer low-cost crop insurance.",
+        "explanationHi": "सूखा या बाढ़ आपकी फसल को नष्ट कर सकती है।",
+        "audioUrl": "https://example.com/audio/crop-insurance.mp3",
+        "duration": "3:40"
+      }
+    ]
+  },
+  {
+    "level": 6,
+    "title": "Start Your Business",
+    "titleHi": "अपना व्यवसाय शुरू करें",
+    "lessons": [
+      {
+        "id": 1,
+        "title": "Entrepreneurship Mindset",
+        "titleHi": "उद्यमिता की मानसिकता",
+        "definition": "Entrepreneurship is creating a business to solve problems and earn income",
+        "definitionHi": "उद्यमिता समस्याओं को हल करने और आय अर्जित करने के लिए एक व्यवसाय बनाना है",
+        "explanation": "You can start with what you know - tailoring, cooking, farming, crafts. An entrepreneur identifies needs, creates value, and builds a business. Many successful businesses start small.",
+        "explanationHi": "आप जो जानते हैं उससे शुरू कर सकते हैं - सिलाई, खाना बनाना, खेती, शिल्प।",
+        "audioUrl": "https://example.com/audio/entrepreneur-mindset.mp3",
+        "duration": "4:10"
+      },
+      {
+        "id": 2,
+        "title": "Business Planning",
+        "titleHi": "व्यवसाय योजना",
+        "definition": "A business plan is a roadmap for your business idea",
+        "definitionHi": "एक व्यवसाय योजना आपके व्यावसायिक विचार के लिए एक रोडमैप है",
+        "explanation": "Write down what you'll sell, who will buy it, how much it costs to start, and how much profit you expect. A good plan helps you get loans and avoid costly mistakes.",
+        "explanationHi": "लिखें कि आप क्या बेचेंगे, कौन इसे खरीदेगा, शुरू करने में कितना खर्च होगा।",
+        "audioUrl": "https://example.com/audio/business-plan.mp3",
+        "duration": "4:00"
+      },
+      {
+        "id": 3,
+        "title": "Starting Capital",
+        "titleHi": "शुरुआती पूंजी",
+        "definition": "Starting capital is money needed to start a business",
+        "definitionHi": "शुरुआती पूंजी एक व्यवसाय शुरू करने के लिए आवश्यक पैसा है",
+        "explanation": "You need money for equipment, materials, and operating costs. Start small to test your idea. Use personal savings, family help, or business loans like PM Mudra.",
+        "explanationHi": "आपको उपकरण, सामग्री और परिचालन लागत के लिए पैसा चाहिए।",
+        "audioUrl": "https://example.com/audio/starting-capital.mp3",
+        "duration": "3:55"
+      },
+      {
+        "id": 4,
+        "title": "Growing Your Business",
+        "titleHi": "अपना व्यवसाय बढ़ाना",
+        "definition": "Growth means increasing sales, profit, and market reach",
+        "definitionHi": "वृद्धि का मतलब बिक्री, लाभ और बाजार पहुंच बढ़ाना है",
+        "explanation": "Track every rupee earned and spent. Reinvest small profits to expand. Tell customers about your products. As you earn more, improve quality and reach new customers.",
+        "explanationHi": "हर रुपये की कमाई और खर्च को ट्रैक करें। छोटे मुनाफे को फिर से निवेश करें।",
+        "audioUrl": "https://example.com/audio/business-growth.mp3",
+        "duration": "4:05"
+      }
+    ]
+  }
+]

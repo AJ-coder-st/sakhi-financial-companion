@@ -107,7 +107,7 @@ const DocumentScan = () => {
             Smart Financial Document Scanner
           </h1>
           <p className="text-muted-foreground max-w-2xl">
-            Upload bank challans, demand drafts, receipts or payment slips. SAKHI will
+            Upload bank challans, demand drafts, receipts or payment slips. IRAIVI will
             read the document, extract key details like amount and reference number, and
             structure them for your financial twin.
           </p>
@@ -177,7 +177,7 @@ const DocumentScan = () => {
             <CardHeader>
               <CardTitle>AI extracted information</CardTitle>
               <CardDescription>
-                View raw OCR text and key financial fields detected by SAKHI.
+                View raw OCR text and key financial fields detected by IRAIVI.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">

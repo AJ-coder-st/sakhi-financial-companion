@@ -21,11 +21,11 @@ export const translations = {
 
     // Hero
     availableIn: "Available in 10+ Indian Languages",
-    heroTagline: "Your SAKHI, Your Strength",
+    heroTagline: "Your IRAIVI, Your Strength",
     heroDesc:
       "AI-powered financial companion designed for rural women. Voice-first. Feature-phone friendly. Reaching the truly last mile.",
     heroChatGreeting:
-      "Namaste Sunita didi! 🙏 I am your SAKHI. How can I help you today?",
+      "Namaste Sunita didi! 🙏 I am your IRAIVI. How can I help you today?",
     heroChatUserPrompt: "Tell me about savings schemes.",
     heroChatSakhiReply:
       "Of course! I found 3 schemes for you. First is the Mahila Samman Savings Certificate — it gives 7.5% interest. ✨",
@@ -52,7 +52,7 @@ export const translations = {
     connect: "Connect",
     connectDesc: "Sign up with just your phone number. No email, no passwords. Available via WhatsApp, USSD, or app.",
     interact: "Interact",
-    interactDesc: "Speak to SAKHI in your language. She finds schemes, tracks savings, and teaches financial concepts.",
+    interactDesc: "Speak to IRAIVI in your language. She finds schemes, tracks savings, and teaches financial concepts.",
     empower: "Empower",
     empowerDesc: "Access government benefits, build savings habits, and grow your financial confidence — one step at a time.",
     step: "STEP",
@@ -62,11 +62,11 @@ export const translations = {
     modules: "Modules",
     featuresSubtitle: "Everything a rural woman needs for financial independence — in one platform",
     aiVoiceAssistant: "AI Voice Assistant",
-    aiVoiceDesc: "Talk to SAKHI in Hindi, Tamil, Telugu, Bengali & more. She understands you and guides you — no typing needed.",
+    aiVoiceDesc: "Talk to IRAIVI in Hindi, Tamil, Telugu, Bengali & more. She understands you and guides you — no typing needed.",
     financialLiteracy: "Financial Literacy",
     financialLiteracyDesc: "Audio stories, illustrated cards, quizzes. Learn from 'What is money?' to 'Start your business' — at your pace.",
     schemeMatching: "Scheme Matching",
-    schemeMatchingDesc: "50+ government schemes analyzed. SAKHI matches your profile to eligible benefits and guides your application.",
+    schemeMatchingDesc: "50+ government schemes analyzed. IRAIVI matches your profile to eligible benefits and guides your application.",
     budgetTracker: "Budget Tracker",
     budgetTrackerDesc: "\"Maine 50 rupaye sabzi pe kharch kiye\" — voice-log expenses. See monthly summaries and savings streaks.",
     microSavings: "Micro-Savings",
@@ -77,7 +77,7 @@ export const translations = {
     // Schemes Section
     governmentSchemes: "Government",
     schemesMatchedTitle: "Schemes Matched",
-    schemesAnalyzes: "SAKHI analyzes 50+ schemes and matches them to your profile",
+    schemesAnalyzes: "IRAIVI analyzes 50+ schemes and matches them to your profile",
     match: "Match",
 
     // Impact
@@ -95,14 +95,14 @@ export const translations = {
     // CTA
     bePartOf: "Be Part of the",
     revolution: "Revolution",
-    ctaDesc: "SAKHI is more than an app — it's a movement to bring 200 million women into the financial mainstream.",
+    ctaDesc: "IRAIVI is more than an app — it's a movement to bring 200 million women into the financial mainstream.",
     partnerWithUs: "Partner With Us",
     partnerDesc: "NGOs, banks, government agencies",
     invest: "Invest",
     investDesc: "Impact-driven funding for scale",
     buildWithUs: "Build With Us",
     buildDesc: "Open-source contributors welcome",
-    launchSakhi: "Launch SAKHI",
+    launchSakhi: "Launch IRAIVI",
 
     // Footer
     footerDesc: "Smart AI for Kisan & Household Inclusion. Empowering rural women through voice-first financial technology.",
@@ -114,11 +114,11 @@ export const translations = {
     dpdpCompliance: "DPDP Compliance",
     openSource: "Open Source",
     contact: "Contact",
-    madeWithLove: "© 2026 SAKHI — Made with ❤️ for Bharat",
+    madeWithLove: "© 2026 IRAIVI — Made with ❤️ for Bharat",
 
     // Dashboard
     home: "Home",
-    sakhiAI: "SAKHI AI",
+    sakhiAI: "IRAIVI AI",
     budget: "Budget",
     savings: "Savings",
     learn: "Learn",
@@ -133,7 +133,7 @@ export const translations = {
     schemeAlertText: "You may be eligible for <strong>PM Vishwakarma Yojana</strong> — up to ₹3 lakh at 5% interest!",
     checkEligibility: "Check Eligibility",
     quickActions: "Quick Actions",
-    talkToSakhi: "Talk to SAKHI",
+    talkToSakhi: "Talk to IRAIVI",
     logExpense: "Log Expense",
     findSchemes: "Find Schemes",
     addSavings: "Add Savings",
@@ -181,6 +181,33 @@ export const translations = {
 
     // Dashboard Assistant
     typeOrSpeak: "Type or speak your question...",
+
+    // Learn - New Keys
+    lesson: "Lesson",
+    definition: "Definition",
+    explanation: "Explanation",
+    audioAvailable: "Audio available",
+    playLesson: "Play Lesson",
+    completeLesson: "Complete Lesson",
+    locked: "Locked",
+    complete: "Complete",
+
+    // Savings - New Keys
+    addAmount: "Add Amount",
+    enterAmount: "Enter amount to save",
+    savingHistory: "Saving History",
+    latestContribution: "Latest Contribution",
+    monthlyProgress: "Monthly Progress",
+    goalDetails: "Goal Details",
+    reason: "Why this goal",
+    category: "Category",
+    paymentClicked: "Payment recorded successfully!",
+    remaining: "Remaining",
+    daysLeft: "days left",
+    description: "Description",
+    cancel: "Cancel",
+    close: "Close",
+    loading: "Loading...",
 
     // Language
     language: "Language",
@@ -280,10 +307,10 @@ export const translations = {
     dpdpCompliance: "DPDP अनुपालन",
     openSource: "ओपन सोर्स",
     contact: "संपर्क",
-    madeWithLove: "© 2026 SAKHI — भारत के लिए ❤️ से बना",
+    madeWithLove: "© 2026 IRAIVI — भारत के लिए ❤️ से बना",
 
     home: "होम",
-    sakhiAI: "SAKHI AI",
+    sakhiAI: "IRAIVI AI",
     budget: "बजट",
     savings: "बचत",
     learn: "सीखें",
@@ -340,6 +367,34 @@ export const translations = {
     pending: "लंबित",
 
     typeOrSpeak: "अपना सवाल टाइप करें या बोलें...",
+
+    // सीखें - नई कुंजियां
+    lesson: "पाठ",
+    definition: "परिभाषा",
+    explanation: "व्याख्या",
+    audioAvailable: "ऑडियो उपलब्ध है",
+    playLesson: "पाठ चलाएं",
+    completeLesson: "पाठ पूर्ण करें",
+    locked: "बंद",
+    complete: "पूर्ण",
+
+    // बचत - नई कुंजियां
+    addAmount: "राशि जोड़ें",
+    enterAmount: "बचाने के लिए राशि दर्ज करें",
+    savingHistory: "बचत इतिहास",
+    latestContribution: "नवीनतम योगदान",
+    monthlyProgress: "मासिक प्रगति",
+    goalDetails: "लक्ष्य विवरण",
+    reason: "यह लक्ष्य क्यों",
+    category: "श्रेणी",
+    paymentClicked: "भुगतान सफलतापूर्वक दर्ज हुआ!",
+    remaining: "शेष",
+    daysLeft: "दिन बाकी",
+    description: "विवरण",
+    cancel: "रद्द करें",
+    close: "बंद करें",
+    loading: "लोड हो रहा है...",
+
     language: "भाषा",
   },
   ta: {
@@ -440,7 +495,7 @@ export const translations = {
     madeWithLove: "© 2026 SAKHI — பாரதத்திற்காக ❤️ உடன்",
 
     home: "முகப்பு",
-    sakhiAI: "SAKHI AI",
+    sakhiAI: "IRAIVI AI",
     budget: "பட்ஜெட்",
     savings: "சேமிப்பு",
     learn: "கற்றல்",
@@ -497,6 +552,34 @@ export const translations = {
     pending: "நிலுவையில்",
 
     typeOrSpeak: "உங்கள் கேள்வியை தட்டச்சு செய்யுங்கள் அல்லது பேசுங்கள்...",
+
+    // கற்றல் - புதிய விசைகள்
+    lesson: "பாடம்",
+    definition: "வரையறை",
+    explanation: "விளக்கம்",
+    audioAvailable: "ஆடியோ கிடைக்கிறது",
+    playLesson: "பாடத்தை இயக்கவும்",
+    completeLesson: "பாடத்தை முடிக்கவும்",
+    locked: "பூட்டப்பட்டது",
+    complete: "முடிந்தது",
+
+    // சேமிப்பு - புதிய விசைகள்
+    addAmount: "தொகை சேர்க்கவும்",
+    enterAmount: "சேமிக்க வேண்டிய தொகை நுழையவும்",
+    savingHistory: "சேமிப்பு வரலாறு",
+    latestContribution: "சமீபத்திய பங்களிப்பு",
+    monthlyProgress: "மாதிக முன்னேற்றம்",
+    goalDetails: "இலக்கு விவரங்கள்",
+    reason: "இந்த இலக்கு ஏன்",
+    category: "வகை",
+    paymentClicked: "பணம் வெற்றிகரமாக பதிவு செய்யப்பட்டது!",
+    remaining: "மீதமுள்ளது",
+    daysLeft: "நாட்கள் மீதமுள்ளது",
+    description: "விளக்கம்",
+    cancel: "ரத்து செய்",
+    close: "மூடு",
+    loading: "ஏற்றுக்கொள்ளப்பட்டு...",
+
     language: "மொழி",
   },
   te: {
@@ -594,10 +677,10 @@ export const translations = {
     dpdpCompliance: "DPDP అనుసరణ",
     openSource: "ఓపెన్ సోర్స్",
     contact: "సంప్రదించండి",
-    madeWithLove: "© 2026 SAKHI — భారత్ కోసం ❤️ తో",
+    madeWithLove: "© 2026 IRAIVI — భారత కోసం ❤️ తో చేసిన",
 
     home: "హోమ్",
-    sakhiAI: "SAKHI AI",
+    sakhiAI: "IRAIVI AI",
     budget: "బడ్జెట్",
     savings: "సేవింగ్స్",
     learn: "నేర్చుకో",
@@ -654,6 +737,34 @@ export const translations = {
     pending: "పెండింగ్",
 
     typeOrSpeak: "మీ ప్రశ్నను టైప్ చేయండి లేదా మాట్లాడండి...",
+
+    // నేర్చుకోవడం - నవ కీలు
+    lesson: "సబక",
+    definition: "నిర్వచనం",
+    explanation: "వివరణ",
+    audioAvailable: "ఆడియో అందుబాటులో ఉంది",
+    playLesson: "పాఠం ప్లే చేయండి",
+    completeLesson: "పాఠం పూర్తి చేయండి",
+    locked: "లాక్ చేయబడింది",
+    complete: "పూర్తి",
+
+    // సేవింగ్స్ - నవ కీలు
+    addAmount: "మొత్తం జోడించండి",
+    enterAmount: "సేవ చేయవలసిన మొత్తాన్ని నమోదు చేయండి",
+    savingHistory: "సేవింగ్ చరిత్ర",
+    latestContribution: "సమీపస్థ రచన",
+    monthlyProgress: "నెలవారీ పురోగతి",
+    goalDetails: "లక్ష్య వివరాలు",
+    reason: "ఈ లక్ష్యం ఎందుకు",
+    category: "వర్గం",
+    paymentClicked: "చెల్లింపు విజయవంతంగా నమోదు చేయబడింది!",
+    remaining: "మిగిలి ఉంది",
+    daysLeft: "రోజులు మిగిలి ఉన్నాయి",
+    description: "వివరణ",
+    cancel: "రద్దు చేయండి",
+    close: "మూసివేయండి",
+    loading: "లోడ్ చేస్తున్నది...",
+
     language: "భాష",
   },
 } as const;

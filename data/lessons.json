@@ -1,0 +1,118 @@
+{
+  "lessons": [
+    {
+      "id": 1,
+      "level": 1,
+      "title": "What is Money?",
+      "description": "Learn the basics of money and why it matters",
+      "text": "Money is a tool that helps us buy the things we need like food, clothes, and education. It also helps us save for the future and protect ourselves from emergencies. Without money, we would have to trade things we own to get other things we need. Money makes this easier because it has value that everyone accepts.",
+      "audio": "Money is a tool that helps us buy the things we need like food, clothes, and education. It also helps us save for the future and protect ourselves from emergencies. Without money, we would have to trade things we own to get other things we need. Money makes this easier because it has value that everyone accepts.",
+      "quiz": {
+        "question": "What is the main purpose of money?",
+        "options": [
+          "To make us rich and famous",
+          "To help us buy things we need and save for the future",
+          "To show off wealth to others",
+          "To replace all other valuables"
+        ],
+        "correctAnswer": 1
+      },
+      "estimatedTime": "5 minutes"
+    },
+    {
+      "id": 2,
+      "level": 1,
+      "title": "Why Saving is Important",
+      "description": "Understand the power of saving money",
+      "text": "Saving money means keeping some of what you earn instead of spending it all. When you save, you create a safety net for unexpected problems. For example, if someone in your family gets sick, you can pay for medicine without taking a loan. Saving also helps you reach bigger goals like buying a house or sending your children to school. Every rupee you save today will help you tomorrow.",
+      "audio": "Saving money means keeping some of what you earn instead of spending it all. When you save, you create a safety net for unexpected problems. For example, if someone in your family gets sick, you can pay for medicine without taking a loan. Saving also helps you reach bigger goals like buying a house or sending your children to school. Every rupee you save today will help you tomorrow.",
+      "quiz": {
+        "question": "Why is saving money important?",
+        "options": [
+          "To buy luxury items immediately",
+          "To create a safety net for emergencies and reach bigger goals",
+          "To earn more income",
+          "To impress neighbors"
+        ],
+        "correctAnswer": 1
+      },
+      "estimatedTime": "5 minutes"
+    },
+    {
+      "id": 3,
+      "level": 2,
+      "title": "How to Make a Budget",
+      "description": "Create a simple budget to manage your money",
+      "text": "A budget is a plan for your money. First, write down all the money you earn in a month. Then list everything you spend money on like food, rent, clothes, and transportation. Subtract your spending from your income. If you have money left over, you can save it. If you spend more than you earn, you need to cut unnecessary expenses. A simple budget helps you understand where your money goes and make better decisions.",
+      "audio": "A budget is a plan for your money. First, write down all the money you earn in a month. Then list everything you spend money on like food, rent, clothes, and transportation. Subtract your spending from your income. If you have money left over, you can save it. If you spend more than you earn, you need to cut unnecessary expenses. A simple budget helps you understand where your money goes and make better decisions.",
+      "quiz": {
+        "question": "What is the first step in making a budget?",
+        "options": [
+          "Buy things you want",
+          "Write down all the money you earn in a month",
+          "Borrow money from friends",
+          "Invest in stocks"
+        ],
+        "correctAnswer": 1
+      },
+      "estimatedTime": "7 minutes"
+    },
+    {
+      "id": 4,
+      "level": 3,
+      "title": "Understanding Government Schemes",
+      "description": "Learn about free government programs for you",
+      "text": "Government schemes are free programs designed to help people like you. These schemes provide money, insurance, or support for farming, education, healthcare, and more. For example, some schemes give money to girls for education, while others provide health insurance for families. Each scheme has different rules for who can apply. IRAIVI can help you find schemes you qualify for and guide you through the application process. Many women miss these opportunities because they don't know about them.",
+      "audio": "Government schemes are free programs designed to help people like you. These schemes provide money, insurance, or support for farming, education, healthcare, and more. For example, some schemes give money to girls for education, while others provide health insurance for families. Each scheme has different rules for who can apply. IRAIVI can help you find schemes you qualify for and guide you through the application process. Many women miss these opportunities because they don't know about them.",
+      "quiz": {
+        "question": "What are government schemes?",
+        "options": [
+          "Programs to make you famous",
+          "Free programs designed to help people with money, insurance, or support",
+          "Ways to borrow expensive loans",
+          "Real estate investments"
+        ],
+        "correctAnswer": 1
+      },
+      "estimatedTime": "8 minutes"
+    },
+    {
+      "id": 5,
+      "level": 4,
+      "title": "Safe Loans vs Dangerous Loans",
+      "description": "Know how to avoid loan traps",
+      "text": "Not all loans are the same. Safe loans come from banks or government programs with clear terms written on paper. The interest rate is fixed and reasonable. Dangerous loans often come from private lenders who charge very high interest rates, hidden fees, or pressure you to repay quickly. They may threaten you or take your jewelry as collateral. Before taking any loan, always ask: What is the interest rate? What are all the fees? How long do I have to pay back? Can I afford it? If someone pressures you or the terms are unclear, it's probably a dangerous loan. Always ask IRAIVI or a trusted advisor before taking a loan.",
+      "audio": "Not all loans are the same. Safe loans come from banks or government programs with clear terms written on paper. The interest rate is fixed and reasonable. Dangerous loans often come from private lenders who charge very high interest rates, hidden fees, or pressure you to repay quickly. They may threaten you or take your jewelry as collateral. Before taking any loan, always ask: What is the interest rate? What are all the fees? How long do I have to pay back? Can I afford it? If someone pressures you or the terms are unclear, it's probably a dangerous loan. Always ask IRAIVI or a trusted advisor before taking a loan.",
+      "quiz": {
+        "question": "Which is a sign of a dangerous loan?",
+        "options": [
+          "Clear interest rate written on paper",
+          "Fixed repayment schedule",
+          "Very high interest rates and hidden fees with pressure to repay quickly",
+          "Option from a registered bank"
+        ],
+        "correctAnswer": 2
+      },
+      "estimatedTime": "8 minutes"
+    },
+    {
+      "id": 6,
+      "level": 5,
+      "title": "Planning Your Financial Future",
+      "description": "Create a long-term financial plan",
+      "text": "Building a strong financial future means thinking ahead. At age 25, start saving for your children's education. At 35, build emergency savings of three to six months of expenses. At 45, focus on retirement savings. At 55, protect your assets and plan for old age. Set clear goals like saving 1000 rupees per month or building 50000 rupees in emergency fund. Write these goals down and track your progress. Use IRAIVI to find schemes and investments that match your goals. Remember, it's never too late to start. Even small amounts saved regularly add up over time. Your future financial security depends on the choices you make today.",
+      "audio": "Building a strong financial future means thinking ahead. At age 25, start saving for your children's education. At 35, build emergency savings of three to six months of expenses. At 45, focus on retirement savings. At 55, protect your assets and plan for old age. Set clear goals like saving 1000 rupees per month or building 50000 rupees in emergency fund. Write these goals down and track your progress. Use IRAIVI to find schemes and investments that match your goals. Remember, it's never too late to start. Even small amounts saved regularly add up over time. Your future financial security depends on the choices you make today.",
+      "quiz": {
+        "question": "What should be your first step in building financial security?",
+        "options": [
+          "Buy expensive jewelry",
+          "Invest all money in business",
+          "Set clear financial goals and start saving regularly",
+          "Wait until you earn more money"
+        ],
+        "correctAnswer": 2
+      },
+      "estimatedTime": "8 minutes"
+    }
+  ]
+}

@@ -13,7 +13,7 @@ const Footer = () => {
               <div className="w-8 h-8 rounded-lg bg-saffron-gradient flex items-center justify-center">
                 <Mic className="w-4 h-4 text-saffron-foreground" />
               </div>
-              <span className="text-lg font-bold text-primary-foreground">SAKHI</span>
+              <span className="text-lg font-bold text-primary-foreground">IRAIVI</span>
             </div>
             <p className="text-sm">{t("footerDesc")}</p>
           </div>

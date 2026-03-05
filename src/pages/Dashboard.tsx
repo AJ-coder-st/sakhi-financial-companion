@@ -25,7 +25,7 @@ const Dashboard = () => {
 
   const tabs = [
     { key: "home" as TabKey, label: t("home"), icon: Home },
-    { key: "assistant" as TabKey, label: t("sakhiAI"), icon: Mic },
+    { key: "assistant" as TabKey, label: t("iraivisAI"), icon: Mic },
     { key: "schemes" as TabKey, label: t("schemes"), icon: Search },
     { key: "budget" as TabKey, label: t("budget"), icon: BarChart3 },
     { key: "savings" as TabKey, label: t("savings"), icon: PiggyBank },
@@ -90,7 +90,7 @@ const Dashboard = () => {
                   <div className="w-9 h-9 rounded-xl bg-saffron-gradient flex items-center justify-center">
                     <Mic className="w-5 h-5 text-saffron-foreground" />
                   </div>
-                  <span className="text-lg font-bold text-sidebar-foreground">SAKHI</span>
+                  <span className="text-lg font-bold text-sidebar-foreground">IRAIVI</span>
                 </div>
                 <button onClick={() => setSidebarOpen(false)}>
                   <X className="w-5 h-5 text-sidebar-foreground" />

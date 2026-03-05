@@ -240,4 +240,3 @@ export const getScoreBgColor = (score: number): string => {
   if (score >= 40) return "bg-yellow-100";
   return "bg-red-100";
 };
-

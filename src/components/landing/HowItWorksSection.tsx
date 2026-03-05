@@ -18,7 +18,7 @@ const HowItWorksSection = () => {
     <section id="how-it-works" className="py-20 bg-background" ref={ref}>
       <div className="container mx-auto px-4">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={isInView ? { opacity: 1, y: 0 } : {}} className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-3">{t("howSakhiWorks")} <span className="text-gradient-sakhi">SAKHI</span> {t("works")}</h2>
+          <h2 className="text-3xl sm:text-4xl font-bold mb-3">{t("howSakhiWorks")} <span className="text-gradient-sakhi">IRAIVI</span> {t("works")}</h2>
           <p className="text-muted-foreground">{t("threeSteps")}</p>
         </motion.div>
 

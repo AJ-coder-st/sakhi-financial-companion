@@ -8,6 +8,9 @@ import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import DocumentScan from "./pages/DocumentScan";
+import BudgetTracker from "./pages/BudgetTracker";
+import FinancialDashboard from "./pages/FinancialDashboard";
+import VoiceAssistant from "./components/VoiceAssistant";
 
 const queryClient = new QueryClient();
 
@@ -22,8 +25,11 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/scan-document" element={<DocumentScan />} />
+            <Route path="/budget" element={<BudgetTracker />} />
+            <Route path="/financial-dashboard" element={<FinancialDashboard />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <VoiceAssistant />
         </BrowserRouter>
       </TooltipProvider>
     </LanguageProvider>

@@ -1,4 +1,4 @@
-import schemes from "../data/schemes.json";
+import schemes from "../../data/schemes.json";
 
 export interface UserProfile {
   income: number;
@@ -117,7 +117,7 @@ export async function matchSchemes(
     gender: "gender" in input ? input.gender : "other",
     hasOwnBusiness: "hasOwnBusiness" in input ? input.hasOwnBusiness : false,
     location:
-      ("location" in input && input.location) || "semi-urban" || "rural",
+      (("location" in input && input.location) as "rural" | "semi-urban" | "urban") || "semi-urban",
     isGroupMember: "isGroupMember" in input ? input.isGroupMember : false,
     age: "age" in input ? input.age : 25,
   };
@@ -207,4 +207,3 @@ export const checkEligibility = (
     concerns,
   };
 };
-

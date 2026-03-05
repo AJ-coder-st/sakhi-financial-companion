@@ -13,6 +13,7 @@ import { preprocessDocumentImage } from "../lib/documentScanner";
 import { runOcrOnBuffer } from "../lib/ocrProcessor";
 import { extractFinancialDataFromText } from "../lib/documentAnalyzer";
 import schemesJson from "../data/schemes.json";
+import lessonsJson from "../data/lessons.json";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -368,6 +369,132 @@ app.post(
     }
   },
 );
+
+// ============================================
+// LEARNING MODULE API ENDPOINTS
+// ============================================
+
+/**
+ * GET /api/lessons
+ * Returns all available lessons from lessons.json
+ */
+app.get("/api/lessons", async (req, res) => {
+  try {
+    res.json({
+      success: true,
+      lessons: lessonsJson.lessons || [],
+      total: lessonsJson.lessons?.length || 0,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error fetching lessons:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch lessons',
+      message: 'An unexpected error occurred. Please try again later.'
+    });
+  }
+});
+
+/**
+ * POST /api/lessons/complete
+ * Mark a lesson as completed for a specific user
+ */
+app.post("/api/lessons/complete", async (req, res) => {
+  try {
+    const { lessonId, userId, answers } = req.body;
+    
+    if (!lessonId || !userId) {
+      return res.status(400).json({ 
+        error: 'Invalid request',
+        message: 'lessonId and userId are required'
+      });
+    }
+    
+    // Validate lessonId is a number
+    if (typeof lessonId !== 'number' || lessonId < 1) {
+      return res.status(400).json({ 
+        error: 'Invalid lesson ID',
+        message: 'lessonId must be a positive number'
+      });
+    }
+    
+    // Validate userId is a string
+    if (typeof userId !== 'string' || userId.trim().length === 0) {
+      return res.status(400).json({ 
+        error: 'Invalid user ID',
+        message: 'userId must be a non-empty string'
+      });
+    }
+    
+    console.log('Lesson completion recorded:', { userId, lessonId, answers, completedAt: new Date() });
+    
+    // TODO: Connect to MongoDB
+    // await db.collection('lessonCompletions').updateOne(
+    //   { userId },
+    //   { 
+    //     $addToSet: { completedLessons: lessonId },
+    //     $set: { lastUpdated: new Date() }
+    //   },
+    //   { upsert: true }
+    // );
+    
+    res.json({
+      success: true,
+      status: 'completed',
+      lessonId,
+      userId,
+      completedAt: new Date().toISOString(),
+      message: 'Lesson marked as completed successfully'
+    });
+  } catch (error) {
+    console.error('Error completing lesson:', error);
+    res.status(500).json({ 
+      error: 'Failed to mark lesson complete',
+      message: 'An unexpected error occurred. Please try again later.'
+    });
+  }
+});
+
+/**
+ * GET /api/lessons/complete
+ * Get user's completion status for all lessons
+ */
+app.get("/api/lessons/complete", async (req, res) => {
+  try {
+    const userId = req.query.userId;
+    
+    if (!userId || typeof userId !== 'string' || userId.trim().length === 0) {
+      return res.status(400).json({ 
+        error: 'Missing parameter',
+        message: 'userId query parameter is required'
+      });
+    }
+    
+    // TODO: Query MongoDB for user's completion history
+    // const userProgress = await db.collection('lessonCompletions')
+    //   .findOne({ userId });
+    // const completedLessons = userProgress?.completedLessons || [];
+    
+    // For now: return empty (first visit - no lessons completed)
+    const completedLessons = [];
+    const totalLessons = 6;
+    
+    res.json({
+      success: true,
+      userId,
+      completedLessons,
+      totalCompleted: completedLessons.length,
+      progress: Math.round((completedLessons.length / totalLessons) * 100),
+      nextUnlockedLesson: completedLessons.length + 1
+    });
+  } catch (error) {
+    console.error('Error fetching completion status:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch completion status',
+      message: 'An unexpected error occurred. Please try again later.'
+    });
+  }
+});
 
 app.listen(port, async () => {
   console.log(`Sakhi API server listening on http://localhost:${port}`);
