@@ -4,6 +4,7 @@ import cors from "cors";
 import multer from "multer";
 import path from "path";
 import { fileURLToPath } from "url";
+import { AssemblyAI } from "assemblyai";
 
 import { analyzeUserQuery, generateFinalAdvice, initializeGemini } from "../lib/gemini";
 import { runFinanceTwin } from "../lib/financeTwin";
@@ -33,7 +34,7 @@ const upload = multer({
 
 // Health check
 app.get("/api/health", (_req, res) => {
-  res.json({ ok: true, message: "Sakhi API server running" });
+  res.json({ ok: true, message: "IRAIVI API server running" });
 });
 
 // Advisor endpoint (Gemini + finance twin + schemes)
@@ -201,114 +202,168 @@ app.get("/api/schemes", (_req, res) => {
   }
 });
 
-// STT (AssemblyAI)
+// STT (AssemblyAI) - Improved Implementation
 app.post("/api/stt", async (req, res) => {
   try {
     const apiKey = process.env.ASSEMBLYAI_API_KEY;
     if (!apiKey) {
-      return res
-        .status(500)
-        .json({ error: "STT service is not configured on the server." });
+      console.error("AssemblyAI API key not configured");
+      return res.status(500).json({ 
+        error: "STT service is not configured on the server. Please set ASSEMBLYAI_API_KEY environment variable." 
+      });
     }
 
-    const { audioBase64 } = req.body ?? {};
+    const { audioBase64, mimeType = "audio/webm" } = req.body ?? {};
+    
+    // Enhanced validation
     if (!audioBase64 || typeof audioBase64 !== "string") {
-      return res
-        .status(400)
-        .json({ error: "Missing audioBase64 in request body." });
+      return res.status(400).json({ 
+        error: "Missing or invalid audioBase64 in request body." 
+      });
     }
 
-    const audioBuffer = Buffer.from(audioBase64, "base64");
-    const baseUrl = "https://api.assemblyai.com/v2";
+    // Validate base64 format
+    if (!audioBase64.match(/^[A-Za-z0-9+/]*={0,2}$/)) {
+      return res.status(400).json({ 
+        error: "Invalid base64 audio data format." 
+      });
+    }
 
-    const uploadRes = await fetch(`${baseUrl}/upload`, {
-      method: "POST",
-      headers: {
-        Authorization: apiKey,
-        "Transfer-Encoding": "chunked",
-      },
-      body: audioBuffer,
+    // Initialize AssemblyAI client
+    const assemblyAI = new AssemblyAI({
+      apiKey: apiKey,
     });
 
-    if (!uploadRes.ok) {
-      const text = await uploadRes.text();
-      throw new Error(`AssemblyAI upload error: ${uploadRes.status} ${text}`);
+    // Convert base64 to buffer
+    let audioBuffer: Buffer;
+    try {
+      audioBuffer = Buffer.from(audioBase64, "base64");
+      
+      // Validate audio buffer size (max 25MB for AssemblyAI)
+      if (audioBuffer.length > 25 * 1024 * 1024) {
+        return res.status(400).json({ 
+          error: "Audio file too large. Maximum size is 25MB." 
+        });
+      }
+      
+      if (audioBuffer.length === 0) {
+        return res.status(400).json({ 
+          error: "Audio file is empty." 
+        });
+      }
+    } catch (error) {
+      console.error("Error converting base64 to buffer:", error);
+      return res.status(400).json({ 
+        error: "Failed to process audio data." 
+      });
     }
 
-    const uploadJson = (await uploadRes.json()) as { upload_url: string };
-    const uploadUrl = uploadJson.upload_url;
+    console.log(`Processing audio: ${audioBuffer.length} bytes, type: ${mimeType}`);
 
-    const transcriptRes = await fetch(`${baseUrl}/transcript`, {
-      method: "POST",
-      headers: {
-        Authorization: apiKey,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    // Upload audio to AssemblyAI
+    let uploadUrl: string;
+    try {
+      const uploadResponse = await assemblyAI.files.upload(audioBuffer);
+      uploadUrl = uploadResponse;
+      console.log("Audio uploaded successfully:", uploadUrl);
+    } catch (error) {
+      console.error("AssemblyAI upload error:", error);
+      return res.status(500).json({ 
+        error: "Failed to upload audio to AssemblyAI. Please try again." 
+      });
+    }
+
+    // Create transcription request
+    let transcriptId: string;
+    try {
+      const transcript = await assemblyAI.transcripts.create({
         audio_url: uploadUrl,
         language_detection: true,
         punctuate: true,
         format_text: true,
-      }),
-    });
-
-    if (!transcriptRes.ok) {
-      const text = await transcriptRes.text();
-      throw new Error(
-        `AssemblyAI transcript create error: ${transcriptRes.status} ${text}`,
-      );
+        auto_highlights: false,
+        auto_chapters: false,
+        speaker_labels: false,
+        sentiment_analysis: false,
+      });
+      transcriptId = transcript.id;
+      console.log("Transcription created:", transcriptId);
+    } catch (error) {
+      console.error("AssemblyAI transcript creation error:", error);
+      return res.status(500).json({ 
+        error: "Failed to create transcription request." 
+      });
     }
 
-    const transcriptJson = (await transcriptRes.json()) as { id: string };
-    const transcriptId = transcriptJson.id;
+    // Poll for transcription completion with improved timeout
+    const maxAttempts = 30; // 45 seconds max (30 * 1.5s)
+    const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-    // Poll for completion (simple loop)
-    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
-    for (let i = 0; i < 20; i++) {
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
       await sleep(1500);
 
-      const statusRes = await fetch(`${baseUrl}/transcript/${transcriptId}`, {
-        headers: { Authorization: apiKey },
-      });
+      try {
+        const transcript = await assemblyAI.transcripts.get(transcriptId);
+        console.log(`Transcription status (attempt ${attempt + 1}): ${transcript.status}`);
 
-      if (!statusRes.ok) {
-        const text = await statusRes.text();
-        throw new Error(
-          `AssemblyAI transcript status error: ${statusRes.status} ${text}`,
-        );
-      }
+        if (transcript.status === "completed") {
+          if (!transcript.text || transcript.text.trim().length === 0) {
+            return res.status(400).json({ 
+              error: "No speech detected in the audio. Please try speaking more clearly." 
+            });
+          }
+          
+          console.log("Transcription completed successfully");
+          return res.json({ 
+            success: true, 
+            text: transcript.text.trim(),
+            confidence: transcript.confidence,
+            words: transcript.words?.length || 0
+          });
+        }
 
-      const statusJson = (await statusRes.json()) as {
-        status: string;
-        text?: string;
-        error?: string;
-      };
+        if (transcript.status === "error") {
+          console.error("Transcription failed:", transcript.error);
+          return res.status(500).json({ 
+            error: transcript.error || "Transcription failed. Please try again." 
+          });
+        }
 
-      if (statusJson.status === "completed") {
-        return res.json({ success: true, text: statusJson.text ?? "" });
-      }
+        if (transcript.status === "queued" || transcript.status === "processing") {
+          continue; // Keep polling
+        }
 
-      if (statusJson.status === "error") {
-        return res.status(500).json({
-          error:
-            statusJson.error ||
-            "AssemblyAI could not transcribe the audio. Please try again.",
+        // Handle unexpected status
+        console.warn("Unexpected transcription status:", transcript.status);
+        return res.status(500).json({ 
+          error: "Unexpected transcription status. Please try again." 
         });
+
+      } catch (error) {
+        console.error(`Error checking transcription status (attempt ${attempt + 1}):`, error);
+        
+        // If it's the last attempt, return error
+        if (attempt === maxAttempts - 1) {
+          return res.status(500).json({ 
+            error: "Failed to check transcription status. Please try again." 
+          });
+        }
+        
+        // Otherwise continue polling
+        continue;
       }
     }
 
-    return res.status(504).json({
-      error:
-        "Speech-to-text is taking too long. Please try again with a shorter recording.",
+    // Timeout reached
+    console.error("Transcription timeout after", maxAttempts * 1.5, "seconds");
+    return res.status(504).json({ 
+      error: "Transcription is taking too long. Please try again with a shorter recording." 
     });
+
   } catch (error: any) {
     console.error("STT API error:", error);
     res.status(500).json({
-      error:
-        typeof error?.message === "string"
-          ? error.message
-          : "Unexpected error while running speech-to-text.",
+      error: error?.message || "Unexpected error while processing speech-to-text.",
     });
   }
 });
@@ -497,7 +552,7 @@ app.get("/api/lessons/complete", async (req, res) => {
 });
 
 app.listen(port, async () => {
-  console.log(`Sakhi API server listening on http://localhost:${port}`);
+  console.log(`IRAIVI API server listening on http://localhost:${port}`);
   
   // Initialize Gemini on server startup
   try {

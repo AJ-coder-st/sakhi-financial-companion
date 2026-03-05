@@ -6,11 +6,12 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "@/i18n/LanguageContext";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
-import NotFound from "./pages/NotFound";
+import EntrepreneurshipLearning from "./pages/EntrepreneurshipLearning";
 import DocumentScan from "./pages/DocumentScan";
 import BudgetTracker from "./pages/BudgetTracker";
 import FinancialDashboard from "./pages/FinancialDashboard";
 import VoiceAssistant from "./components/VoiceAssistant";
+import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/entrepreneurship" element={<EntrepreneurshipLearning />} />
             <Route path="/scan-document" element={<DocumentScan />} />
             <Route path="/budget" element={<BudgetTracker />} />
             <Route path="/financial-dashboard" element={<FinancialDashboard />} />

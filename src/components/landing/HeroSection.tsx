@@ -102,12 +102,12 @@ const HeroSection = () => {
                 </div>
               </div>
 
-              <motion.div animate={{ y: [0, -8, 0] }} transition={{ repeat: Infinity, duration: 3, delay: 0.5 }} className="absolute -left-16 top-20 bg-card rounded-2xl px-4 py-3 shadow-sakhi">
+              <motion.div animate={{ y: [0, -8, 0] }} transition={{ repeat: Infinity, duration: 3, delay: 0.5 }} className="absolute -left-16 top-20 bg-card rounded-2xl px-4 py-3 shadow-iraivi">
                 <p className="text-xs text-muted-foreground">{t("schemesMatched")}</p>
                 <p className="text-2xl font-bold text-primary">50+</p>
               </motion.div>
 
-              <motion.div animate={{ y: [0, -8, 0] }} transition={{ repeat: Infinity, duration: 3, delay: 1.5 }} className="absolute -right-16 bottom-32 bg-card rounded-2xl px-4 py-3 shadow-sakhi">
+              <motion.div animate={{ y: [0, -8, 0] }} transition={{ repeat: Infinity, duration: 3, delay: 1.5 }} className="absolute -right-16 bottom-32 bg-card rounded-2xl px-4 py-3 shadow-iraivi">
                 <p className="text-xs text-muted-foreground">{t("languages")}</p>
                 <p className="text-2xl font-bold text-secondary">10+</p>
               </motion.div>

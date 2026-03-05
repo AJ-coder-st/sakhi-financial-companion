@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Mic, Home, Search, BarChart3, PiggyBank, BookOpen, Users, Settings, 
-  ChevronRight, TrendingUp, Bell, LogOut, Menu, X
+  ChevronRight, TrendingUp, Bell, LogOut, Menu, X, Briefcase, Sparkles
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -15,8 +15,12 @@ import DashboardBudget from "@/components/dashboard/DashboardBudget";
 import DashboardLearn from "@/components/dashboard/DashboardLearn";
 import DashboardSavings from "@/components/dashboard/DashboardSavings";
 import DashboardCommunity from "@/components/dashboard/DashboardCommunity";
+import LearningDashboard from "@/components/entrepreneurship/LearningDashboard";
+import { FutureVisionCard } from "@/components/impact/FutureVisionCard";
+import { ImpactMap } from "@/components/impact/ImpactMap";
+import { VoiceMentor } from "@/components/impact/VoiceMentor";
 
-type TabKey = "home" | "assistant" | "schemes" | "budget" | "learn" | "savings" | "community";
+type TabKey = "home" | "assistant" | "schemes" | "budget" | "learn" | "savings" | "community" | "entrepreneurship" | "impact";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState<TabKey>("home");
@@ -30,40 +34,40 @@ const Dashboard = () => {
     { key: "budget" as TabKey, label: t("budget"), icon: BarChart3 },
     { key: "savings" as TabKey, label: t("savings"), icon: PiggyBank },
     { key: "learn" as TabKey, label: t("learn"), icon: BookOpen },
+    { key: "entrepreneurship" as TabKey, label: "Entrepreneurship", icon: Briefcase },
     { key: "community" as TabKey, label: t("shg"), icon: Users },
+    { key: "impact" as TabKey, label: "Impact", icon: Sparkles },
   ];
 
   return (
     <div className="min-h-screen bg-background flex">
       {/* Sidebar — desktop */}
-      <aside className="hidden lg:flex flex-col w-64 bg-sidebar border-r border-sidebar-border">
-        <div className="p-5 flex items-center gap-2">
-          <div className="w-9 h-9 rounded-xl bg-saffron-gradient flex items-center justify-center">
+      <aside className="hidden lg:flex flex-col w-64 bg-sidebar border-r border-sidebar-border fixed left-0 top-0 bottom-0 z-30">
+        <div className="p-5 flex items-center gap-2 border-b border-sidebar-border">
+          <div className="w-9 h-9 rounded-xl bg-saffron-gradient flex items-center justify-center shadow-saffron">
             <Mic className="w-5 h-5 text-saffron-foreground" />
           </div>
-          <span className="text-lg font-bold text-sidebar-foreground">SAKHI</span>
+          <span className="text-lg font-bold text-sidebar-foreground">IRAIVI</span>
         </div>
-        <nav className="flex-1 px-3 mt-2">
+        <nav className="flex-1 px-3 py-4 overflow-y-auto">
           {tabs.map((tab) => (
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors mb-1 ${
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 mb-1 ${
                 activeTab === tab.key
-                  ? "bg-sidebar-accent text-sidebar-primary"
-                  : "text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+                  ? "bg-sidebar-accent text-sidebar-primary shadow-sm"
+                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
               }`}
             >
-              <tab.icon className="w-5 h-5" />
-              {tab.label}
+              <tab.icon className="w-5 h-5 flex-shrink-0" />
+              <span className="truncate">{tab.label}</span>
             </button>
           ))}
         </nav>
         <div className="p-4 border-t border-sidebar-border">
-          <Link to="/">
-            <button className="flex items-center gap-2 text-sm text-sidebar-foreground/50 hover:text-sidebar-foreground transition-colors">
-              <LogOut className="w-4 h-4" /> {t("backToHome")}
-            </button>
+          <Link to="/" className="flex items-center gap-2 text-sm text-sidebar-foreground/60 hover:text-sidebar-foreground transition-colors">
+            <LogOut className="w-4 h-4" /> {t("backToHome")}
           </Link>
         </div>
       </aside>
@@ -76,49 +80,61 @@ const Dashboard = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.5 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-foreground/50 z-40 lg:hidden"
+              className="fixed inset-0 bg-black/50 z-40 lg:hidden"
               onClick={() => setSidebarOpen(false)}
             />
             <motion.aside
               initial={{ x: -260 }}
               animate={{ x: 0 }}
               exit={{ x: -260 }}
-              className="fixed left-0 top-0 bottom-0 w-64 bg-sidebar z-50 lg:hidden flex flex-col"
+              className="fixed left-0 top-0 bottom-0 w-64 bg-sidebar z-50 lg:hidden flex flex-col shadow-xl"
             >
-              <div className="p-5 flex items-center justify-between">
+              <div className="p-5 flex items-center justify-between border-b border-sidebar-border">
                 <div className="flex items-center gap-2">
-                  <div className="w-9 h-9 rounded-xl bg-saffron-gradient flex items-center justify-center">
+                  <div className="w-9 h-9 rounded-xl bg-saffron-gradient flex items-center justify-center shadow-saffron">
                     <Mic className="w-5 h-5 text-saffron-foreground" />
                   </div>
                   <span className="text-lg font-bold text-sidebar-foreground">IRAIVI</span>
                 </div>
-                <button onClick={() => setSidebarOpen(false)}>
+                <button 
+                  onClick={() => setSidebarOpen(false)}
+                  className="p-1 rounded-lg hover:bg-sidebar-accent/50 transition-colors"
+                >
                   <X className="w-5 h-5 text-sidebar-foreground" />
                 </button>
               </div>
-              <nav className="flex-1 px-3">
+              <nav className="flex-1 px-3 py-4 overflow-y-auto">
                 {tabs.map((tab) => (
                   <button
                     key={tab.key}
                     onClick={() => { setActiveTab(tab.key); setSidebarOpen(false); }}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium mb-1 ${
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 mb-1 ${
                       activeTab === tab.key
-                        ? "bg-sidebar-accent text-sidebar-primary"
-                        : "text-sidebar-foreground/60"
+                        ? "bg-sidebar-accent text-sidebar-primary shadow-sm"
+                        : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
                     }`}
                   >
-                    <tab.icon className="w-5 h-5" />
-                    {tab.label}
+                    <tab.icon className="w-5 h-5 flex-shrink-0" />
+                    <span className="truncate">{tab.label}</span>
                   </button>
                 ))}
               </nav>
+              <div className="p-4 border-t border-sidebar-border">
+                <Link 
+                  to="/" 
+                  onClick={() => setSidebarOpen(false)}
+                  className="flex items-center gap-2 text-sm text-sidebar-foreground/60 hover:text-sidebar-foreground transition-colors"
+                >
+                  <LogOut className="w-4 h-4" /> {t("backToHome")}
+                </Link>
+              </div>
             </motion.aside>
           </>
         )}
       </AnimatePresence>
 
       {/* Main content */}
-      <main className="flex-1 flex flex-col min-h-screen">
+      <main className="flex-1 flex flex-col min-h-screen lg:ml-64">
         {/* Top bar */}
         <header className="h-16 border-b border-border flex items-center px-4 lg:px-6 gap-4 bg-card">
           <button className="lg:hidden" onClick={() => setSidebarOpen(true)}>
@@ -147,7 +163,9 @@ const Dashboard = () => {
           {activeTab === "budget" && <DashboardBudget />}
           {activeTab === "savings" && <DashboardSavings />}
           {activeTab === "learn" && <DashboardLearn />}
+          {activeTab === "entrepreneurship" && <LearningDashboard />}
           {activeTab === "community" && <DashboardCommunity />}
+          {activeTab === "impact" && <ImpactTab />}
         </div>
 
         {/* Floating mic */}
@@ -208,9 +226,11 @@ const HomeTab = ({ onNavigate }: { onNavigate: (tab: TabKey) => void }) => {
             { label: t("findSchemes"), icon: Search, tab: "schemes" as TabKey },
             { label: t("addSavings"), icon: PiggyBank, tab: "savings" as TabKey },
             { label: t("continueLearning"), icon: BookOpen, tab: "learn" as TabKey },
+            { label: t("learnBusiness"), icon: Briefcase, tab: "entrepreneurship" as TabKey },
             { label: t("mySHGGroup"), icon: Users, tab: "community" as TabKey },
+            { label: "View Impact", icon: Sparkles, tab: "impact" as TabKey },
           ].map((a, i) => (
-            <button key={i} onClick={() => onNavigate(a.tab)} className="bg-card rounded-xl p-4 border border-border hover:shadow-sakhi transition-shadow text-left">
+            <button key={i} onClick={() => onNavigate(a.tab)} className="bg-card rounded-xl p-4 border border-border hover:shadow-iraivi transition-shadow text-left">
               <a.icon className="w-5 h-5 text-primary mb-2" />
               <p className="text-sm font-medium">{a.label}</p>
             </button>
@@ -224,6 +244,37 @@ const HomeTab = ({ onNavigate }: { onNavigate: (tab: TabKey) => void }) => {
         <p className="text-sm text-muted-foreground mb-3">{t("level2Banking")}</p>
         <Progress value={33} className="h-3" />
         <p className="text-xs text-muted-foreground mt-2">{t("lessonsCompleted")}</p>
+      </div>
+    </div>
+  );
+};
+
+const ImpactTab = () => {
+  return (
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="text-center">
+        <h2 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 via-amber-600 to-purple-600 bg-clip-text text-transparent mb-4">
+          IRAIVI Impact Dashboard
+        </h2>
+        <p className="text-gray-600 max-w-2xl mx-auto">
+          Experience the power of AI-driven financial empowerment through our interactive dashboard.
+        </p>
+      </div>
+
+      {/* Future Vision Card */}
+      <div className="transform hover:scale-105 transition-transform duration-300">
+        <FutureVisionCard />
+      </div>
+
+      {/* Impact Map */}
+      <div className="transform hover:scale-105 transition-transform duration-300">
+        <ImpactMap />
+      </div>
+
+      {/* Voice Mentor */}
+      <div className="transform hover:scale-105 transition-transform duration-300">
+        <VoiceMentor />
       </div>
     </div>
   );

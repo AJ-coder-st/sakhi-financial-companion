@@ -1,6 +1,6 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { ArrowRight, Heart, Handshake, Code } from "lucide-react";
+import { ArrowRight, Heart, Handshake, Code, BookOpen } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/i18n/LanguageContext";
@@ -25,6 +25,7 @@ const CTASection = () => {
             { icon: Handshake, label: t("partnerWithUs"), desc: t("partnerDesc") },
             { icon: Heart, label: t("invest"), desc: t("investDesc") },
             { icon: Code, label: t("buildWithUs"), desc: t("buildDesc") },
+            { icon: BookOpen, label: "उद्यमगी सीखें / Learn Business", desc: "Start your entrepreneurship journey" },
           ].map((c, i) => (
             <div key={i} className="bg-card rounded-2xl p-6 shadow-sakhi">
               <c.icon className="w-8 h-8 text-primary mx-auto mb-3" />
@@ -36,7 +37,7 @@ const CTASection = () => {
 
         <Link to="/dashboard">
           <Button size="lg" className="bg-saffron-gradient text-saffron-foreground font-bold text-lg shadow-saffron hover:opacity-90 gap-2">
-            {t("launchSakhi")} <ArrowRight className="w-5 h-5" />
+            {t("launchIraivi")} <ArrowRight className="w-5 h-5" />
           </Button>
         </Link>
       </div>
