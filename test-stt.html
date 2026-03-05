@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STT Test - IRAIVI</title>
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+        .mic-button {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border: none;
+            color: white;
+            padding: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            margin: 20px auto;
+            display: block;
+            transition: all 0.3s ease;
+        }
+        .mic-button:hover {
+            transform: scale(1.1);
+        }
+        .mic-button.listening {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(250, 112, 154, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(250, 112, 154, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(250, 112, 154, 0); }
+        }
+        .result {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            min-height: 60px;
+            border: 2px solid #e9ecef;
+        }
+        .status {
+            text-align: center;
+            margin: 10px 0;
+            font-weight: 600;
+        }
+        .supported { color: #28a745; }
+        .not-supported { color: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎤 STT Test - IRAIVI</h1>
+        <div class="status" id="status">Checking browser support...</div>
+        
+        <button class="mic-button" id="micButton" onclick="toggleSpeech()">
+            🎤
+        </button>
+        
+        <div class="result" id="result">
+            Click the microphone and say: "I have 2000 rupees"
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <small>Test phrases to try:</small><br>
+            <small>"I have 2000 rupees"</small><br>
+            <small>"I have five thousand"</small><br>
+            <small>"3000 rupees"</small>
+        </div>
+    </div>
+
+    <script>
+        let recognition;
+        let isListening = false;
+
+        // Check browser support
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const statusEl = document.getElementById('status');
+        const micButton = document.getElementById('micButton');
+        const resultEl = document.getElementById('result');
+
+        if (SpeechRecognition) {
+            statusEl.innerHTML = '✅ Speech Recognition Supported';
+            statusEl.className = 'status supported';
+            
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+            recognition.lang = 'en-IN';
+
+            recognition.onstart = function() {
+                isListening = true;
+                micButton.classList.add('listening');
+                micButton.innerHTML = '🔴';
+                resultEl.innerHTML = '🎤 Listening... Speak now!';
+            };
+
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                resultEl.innerHTML = `✅ You said: "<strong>${transcript}</strong>"`;
+                
+                // Extract amount
+                const amountMatch = transcript.match(/(\d+)/);
+                if (amountMatch) {
+                    const amount = parseInt(amountMatch[1]);
+                    resultEl.innerHTML += `<br>💰 Amount detected: ₹${amount}`;
+                }
+            };
+
+            recognition.onerror = function(event) {
+                resultEl.innerHTML = `❌ Error: ${event.error}`;
+                stopListening();
+            };
+
+            recognition.onend = function() {
+                stopListening();
+            };
+        } else {
+            statusEl.innerHTML = '❌ Speech Recognition Not Supported';
+            statusEl.className = 'status not-supported';
+            micButton.disabled = true;
+            micButton.style.opacity = '0.5';
+            resultEl.innerHTML = 'Your browser does not support speech recognition. Please try Chrome or Edge.';
+        }
+
+        function toggleSpeech() {
+            if (isListening) {
+                stopListening();
+            } else {
+                startListening();
+            }
+        }
+
+        function startListening() {
+            if (recognition) {
+                try {
+                    recognition.start();
+                } catch (error) {
+                    resultEl.innerHTML = `❌ Error starting recognition: ${error.message}`;
+                }
+            }
+        }
+
+        function stopListening() {
+            isListening = false;
+            micButton.classList.remove('listening');
+            micButton.innerHTML = '🎤';
+            if (recognition) {
+                recognition.stop();
+            }
+        }
+    </script>
+</body>
+</html>
