@@ -234,23 +234,23 @@ const LiveTextTranslateScanner: React.FC = () => {
           tessedit_ocr_engine_mode: 1,
           tessedit_noise_removal: 1,
           tessedit_auto_rotate: true,
-          tessedit_min_confidence: 25
+          tessedit_min_confidence: 15 // Reduced from 25 to 15 for more sensitive detection
         }
       );
 
       const detectedText = result.data.text.trim();
       const confidence = result.data.confidence || 0;
 
-      // Ignore low confidence results - lower threshold but still process
-      if (confidence < 30) {
+      // Ignore low confidence results - very low threshold but still process
+      if (confidence < 20) { // Reduced from 30 to 20 for better detection
         const now = Date.now();
-        if (now - lastLogTime > 1000) { // Throttle logs to once per second
-          console.warn("Low confidence frame, still processing:", confidence);
+        if (now - lastLogTime > 2000) { // Throttle logs to once every 2 seconds
+          console.warn("Very low confidence frame, still processing:", confidence);
           setLastLogTime(now);
         }
       }
 
-      // Stabilize text detection - only update when same text appears multiple times
+      // Stabilize text detection - increase stability requirement
       if (detectedText === lastDetectionRef.current) {
         setStableCount(prev => prev + 1);
       } else {
@@ -264,6 +264,9 @@ const LiveTextTranslateScanner: React.FC = () => {
         translatedText: '',
         timestamp: Date.now()
       });
+
+      setIsProcessing(false);
+      setOcrProgress('');
 
       // Translate detected text
       let translatedText = detectedText;
@@ -313,10 +316,10 @@ const LiveTextTranslateScanner: React.FC = () => {
 
       setIsScanning(true);
 
-      // Start OCR interval (throttled for better performance)
+      // Start OCR interval (slower for better detection)
       ocrIntervalRef.current = setInterval(() => {
         processFrame();
-      }, 500); // Process every 500ms for better accuracy
+      }, 1000); // Process every 1 second for better accuracy
 
     } catch (err: any) {
       console.error('Camera error:', err);
@@ -603,8 +606,8 @@ const LiveTextTranslateScanner: React.FC = () => {
         <div className="text-center py-8 text-gray-500">
           <RotateCcw className="w-12 h-12 mx-auto mb-4 text-gray-300" />
           <p>Point your camera at text to detect and translate</p>
-          <p className="text-sm mt-2">OCR processes frames every 2 seconds for better accuracy</p>
-          <p className="text-xs mt-1 text-gray-400">Use "Capture Frame" for high-accuracy single scans</p>
+          <p className="text-sm mt-2">OCR processes frames every 1 second for better accuracy</p>
+          <p className="text-xs mt-1 text-gray-400">Text needs to be stable for 5 consecutive frames to update</p>
         </div>
       )}
     </div>
