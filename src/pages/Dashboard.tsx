@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Mic, Home, Search, BarChart3, PiggyBank, BookOpen, Users, Settings, 
-  ChevronRight, TrendingUp, Bell, LogOut, Menu, X, Briefcase
+  ChevronRight, TrendingUp, Bell, LogOut, Menu, X, Briefcase, Sparkles
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -16,8 +16,11 @@ import DashboardLearn from "@/components/dashboard/DashboardLearn";
 import DashboardSavings from "@/components/dashboard/DashboardSavings";
 import DashboardCommunity from "@/components/dashboard/DashboardCommunity";
 import LearningDashboard from "@/components/entrepreneurship/LearningDashboard";
+import { FutureVisionCard } from "@/components/impact/FutureVisionCard";
+import { ImpactMap } from "@/components/impact/ImpactMap";
+import { VoiceMentor } from "@/components/impact/VoiceMentor";
 
-type TabKey = "home" | "assistant" | "schemes" | "budget" | "learn" | "savings" | "community" | "entrepreneurship";
+type TabKey = "home" | "assistant" | "schemes" | "budget" | "learn" | "savings" | "community" | "entrepreneurship" | "impact";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState<TabKey>("home");
@@ -33,6 +36,7 @@ const Dashboard = () => {
     { key: "learn" as TabKey, label: t("learn"), icon: BookOpen },
     { key: "entrepreneurship" as TabKey, label: "Entrepreneurship", icon: Briefcase },
     { key: "community" as TabKey, label: t("shg"), icon: Users },
+    { key: "impact" as TabKey, label: "Impact", icon: Sparkles },
   ];
 
   return (
@@ -151,6 +155,7 @@ const Dashboard = () => {
           {activeTab === "learn" && <DashboardLearn />}
           {activeTab === "entrepreneurship" && <LearningDashboard />}
           {activeTab === "community" && <DashboardCommunity />}
+          {activeTab === "impact" && <ImpactTab />}
         </div>
 
         {/* Floating mic */}
@@ -213,6 +218,7 @@ const HomeTab = ({ onNavigate }: { onNavigate: (tab: TabKey) => void }) => {
             { label: t("continueLearning"), icon: BookOpen, tab: "learn" as TabKey },
             { label: t("learnBusiness"), icon: Briefcase, tab: "entrepreneurship" as TabKey },
             { label: t("mySHGGroup"), icon: Users, tab: "community" as TabKey },
+            { label: "View Impact", icon: Sparkles, tab: "impact" as TabKey },
           ].map((a, i) => (
             <button key={i} onClick={() => onNavigate(a.tab)} className="bg-card rounded-xl p-4 border border-border hover:shadow-iraivi transition-shadow text-left">
               <a.icon className="w-5 h-5 text-primary mb-2" />
@@ -228,6 +234,37 @@ const HomeTab = ({ onNavigate }: { onNavigate: (tab: TabKey) => void }) => {
         <p className="text-sm text-muted-foreground mb-3">{t("level2Banking")}</p>
         <Progress value={33} className="h-3" />
         <p className="text-xs text-muted-foreground mt-2">{t("lessonsCompleted")}</p>
+      </div>
+    </div>
+  );
+};
+
+const ImpactTab = () => {
+  return (
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="text-center">
+        <h2 className="text-3xl font-bold bg-gradient-to-r from-emerald-600 via-amber-600 to-purple-600 bg-clip-text text-transparent mb-4">
+          IRAIVI Impact Dashboard
+        </h2>
+        <p className="text-gray-600 max-w-2xl mx-auto">
+          Experience the power of AI-driven financial empowerment through our interactive dashboard.
+        </p>
+      </div>
+
+      {/* Future Vision Card */}
+      <div className="transform hover:scale-105 transition-transform duration-300">
+        <FutureVisionCard />
+      </div>
+
+      {/* Impact Map */}
+      <div className="transform hover:scale-105 transition-transform duration-300">
+        <ImpactMap />
+      </div>
+
+      {/* Voice Mentor */}
+      <div className="transform hover:scale-105 transition-transform duration-300">
+        <VoiceMentor />
       </div>
     </div>
   );
