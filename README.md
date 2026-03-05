@@ -182,10 +182,9 @@ src/
 ## 🔧 Installation & Setup
 
 ### **Prerequisites**
-- Node.js 18+ and npm
-- MongoDB database
-- AssemblyAI API key
-- OpenAI API key (for TTS)
+- Node.js 20.16.0+ and npm 10+
+- Google Gemini AI API key
+- Modern web browser (Chrome/Edge recommended for STT)
 
 ### **Local Development Setup**
 
@@ -201,25 +200,39 @@ npm install
 cp .env.example .env
 # Edit .env with your API keys and configuration
 
-# 4. Start the development server
+# 4. Start the development servers
+# Terminal 1: Frontend
 npm run dev
 
-# 5. Start the backend server (in separate terminal)
-npm run server:dev
+# Terminal 2: Backend API Server
+npm run api
 ```
+
+### **Development URLs**
+- **Frontend**: http://localhost:8080
+- **Backend API**: http://localhost:3001
+- **STT Test**: http://localhost:8080/test-stt.html
+- **Dashboard**: http://localhost:8080/dashboard
 
 ### **Environment Variables**
 ```env
 # Frontend
 VITE_API_BASE_URL=http://localhost:3001
-VITE_ASSEMBLYAI_API_KEY=your_assemblyai_key
-VITE_OPENAI_API_KEY=your_openai_key
+GOOGLE_GENERATIVE_AI_API_KEY=your_gemini_api_key
 
 # Backend
-MONGODB_URI=mongodb://localhost:27017/iraivi
-JWT_SECRET=your_jwt_secret
-ASSEMBLYAI_API_KEY=your_assemblyai_key
-OPENAI_API_KEY=your_openai_key
+GOOGLE_GENERATIVE_AI_API_KEY=your_gemini_api_key
+PORT=3001
+```
+
+### **Available Scripts**
+```bash
+npm run dev          # Start frontend development server
+npm run api          # Start backend API server
+npm run build        # Build for production
+npm run preview      # Preview production build
+npm run test         # Run tests
+npm run lint         # Run ESLint
 ```
 
 ---
@@ -421,7 +434,32 @@ Please credit "IRAIVI Financial Companion" when using or modifying this project.
 
 ---
 
-## 🏆 Acknowledgments
+## � Current Working Features (v1.0)
+
+### **✅ Fully Implemented**
+- **🎤 Voice Mentor**: Speech-to-text business advisor with ROI calculations
+- **📊 Impact Dashboard**: Future Vision, Impact Map, and Voice Mentor integration
+- **🗺️ Fixed Sidebar**: Enhanced navigation with proper positioning
+- **🌐 Multilingual UI**: English, Hindi, Tamil, Telugu support
+- **📱 Responsive Design**: Mobile-first approach with desktop optimization
+- **🔧 Development Environment**: Stable dev servers with API integration
+
+### **🚀 Ready for Demo**
+- **Speech Recognition**: Browser-based STT with manual fallback
+- **Business Intelligence**: Investment-based recommendations
+- **Financial Projections**: 12-month future vision calculator
+- **Interactive Maps**: Visual impact representation
+- **Modern UI**: Professional fintech design with animations
+
+### **📊 API Endpoints Active**
+- `/api/health` - Server health check
+- `/api/lessons` - Learning content delivery
+- `/api/advisor` - AI-powered financial advice
+- `/api/schemes` - Government scheme matching
+
+---
+
+## �🏆 Acknowledgments
 
 - **Government of India**: For rural development initiatives
 - **Rural Communities**: For valuable feedback and insights
