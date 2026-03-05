@@ -42,34 +42,32 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-background flex">
       {/* Sidebar — desktop */}
-      <aside className="hidden lg:flex flex-col w-64 bg-sidebar border-r border-sidebar-border">
-        <div className="p-5 flex items-center gap-2">
-          <div className="w-9 h-9 rounded-xl bg-saffron-gradient flex items-center justify-center">
+      <aside className="hidden lg:flex flex-col w-64 bg-sidebar border-r border-sidebar-border fixed left-0 top-0 bottom-0 z-30">
+        <div className="p-5 flex items-center gap-2 border-b border-sidebar-border">
+          <div className="w-9 h-9 rounded-xl bg-saffron-gradient flex items-center justify-center shadow-saffron">
             <Mic className="w-5 h-5 text-saffron-foreground" />
           </div>
           <span className="text-lg font-bold text-sidebar-foreground">IRAIVI</span>
         </div>
-        <nav className="flex-1 px-3 mt-2">
+        <nav className="flex-1 px-3 py-4 overflow-y-auto">
           {tabs.map((tab) => (
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors mb-1 ${
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 mb-1 ${
                 activeTab === tab.key
-                  ? "bg-sidebar-accent text-sidebar-primary"
-                  : "text-sidebar-foreground/60 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+                  ? "bg-sidebar-accent text-sidebar-primary shadow-sm"
+                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
               }`}
             >
-              <tab.icon className="w-5 h-5" />
-              {tab.label}
+              <tab.icon className="w-5 h-5 flex-shrink-0" />
+              <span className="truncate">{tab.label}</span>
             </button>
           ))}
         </nav>
         <div className="p-4 border-t border-sidebar-border">
-          <Link to="/">
-            <button className="flex items-center gap-2 text-sm text-sidebar-foreground/50 hover:text-sidebar-foreground transition-colors">
-              <LogOut className="w-4 h-4" /> {t("backToHome")}
-            </button>
+          <Link to="/" className="flex items-center gap-2 text-sm text-sidebar-foreground/60 hover:text-sidebar-foreground transition-colors">
+            <LogOut className="w-4 h-4" /> {t("backToHome")}
           </Link>
         </div>
       </aside>
@@ -82,49 +80,61 @@ const Dashboard = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.5 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-foreground/50 z-40 lg:hidden"
+              className="fixed inset-0 bg-black/50 z-40 lg:hidden"
               onClick={() => setSidebarOpen(false)}
             />
             <motion.aside
               initial={{ x: -260 }}
               animate={{ x: 0 }}
               exit={{ x: -260 }}
-              className="fixed left-0 top-0 bottom-0 w-64 bg-sidebar z-50 lg:hidden flex flex-col"
+              className="fixed left-0 top-0 bottom-0 w-64 bg-sidebar z-50 lg:hidden flex flex-col shadow-xl"
             >
-              <div className="p-5 flex items-center justify-between">
+              <div className="p-5 flex items-center justify-between border-b border-sidebar-border">
                 <div className="flex items-center gap-2">
-                  <div className="w-9 h-9 rounded-xl bg-saffron-gradient flex items-center justify-center">
+                  <div className="w-9 h-9 rounded-xl bg-saffron-gradient flex items-center justify-center shadow-saffron">
                     <Mic className="w-5 h-5 text-saffron-foreground" />
                   </div>
                   <span className="text-lg font-bold text-sidebar-foreground">IRAIVI</span>
                 </div>
-                <button onClick={() => setSidebarOpen(false)}>
+                <button 
+                  onClick={() => setSidebarOpen(false)}
+                  className="p-1 rounded-lg hover:bg-sidebar-accent/50 transition-colors"
+                >
                   <X className="w-5 h-5 text-sidebar-foreground" />
                 </button>
               </div>
-              <nav className="flex-1 px-3">
+              <nav className="flex-1 px-3 py-4 overflow-y-auto">
                 {tabs.map((tab) => (
                   <button
                     key={tab.key}
                     onClick={() => { setActiveTab(tab.key); setSidebarOpen(false); }}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium mb-1 ${
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 mb-1 ${
                       activeTab === tab.key
-                        ? "bg-sidebar-accent text-sidebar-primary"
-                        : "text-sidebar-foreground/60"
+                        ? "bg-sidebar-accent text-sidebar-primary shadow-sm"
+                        : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
                     }`}
                   >
-                    <tab.icon className="w-5 h-5" />
-                    {tab.label}
+                    <tab.icon className="w-5 h-5 flex-shrink-0" />
+                    <span className="truncate">{tab.label}</span>
                   </button>
                 ))}
               </nav>
+              <div className="p-4 border-t border-sidebar-border">
+                <Link 
+                  to="/" 
+                  onClick={() => setSidebarOpen(false)}
+                  className="flex items-center gap-2 text-sm text-sidebar-foreground/60 hover:text-sidebar-foreground transition-colors"
+                >
+                  <LogOut className="w-4 h-4" /> {t("backToHome")}
+                </Link>
+              </div>
             </motion.aside>
           </>
         )}
       </AnimatePresence>
 
       {/* Main content */}
-      <main className="flex-1 flex flex-col min-h-screen">
+      <main className="flex-1 flex flex-col min-h-screen lg:ml-64">
         {/* Top bar */}
         <header className="h-16 border-b border-border flex items-center px-4 lg:px-6 gap-4 bg-card">
           <button className="lg:hidden" onClick={() => setSidebarOpen(true)}>
